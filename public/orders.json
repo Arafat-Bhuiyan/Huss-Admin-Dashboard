@@ -1,0 +1,102 @@
+[
+  {
+    "id": "1",
+    "orderId": "#ORD-7245",
+    "customer": "Emily Davis",
+    "product": "Nintendo Switch",
+    "date": "12/01/2025",
+    "amount": "$89.99",
+    "status": "Shipped",
+    "image": "/nintendo-switch-gaming-console.jpg"
+  },
+  {
+    "id": "2",
+    "orderId": "#ORD-7245",
+    "customer": "Emily Davis",
+    "product": "Nintendo Switch",
+    "date": "12/01/2025",
+    "amount": "$89.99",
+    "status": "Pending",
+    "image": "/nintendo-switch-gaming-console.jpg"
+  },
+  {
+    "id": "3",
+    "orderId": "#ORD-7245",
+    "customer": "Emily Davis",
+    "product": "Nintendo Switch",
+    "date": "12/01/2025",
+    "amount": "$89.99",
+    "status": "Delivered",
+    "image": "/nintendo-switch-gaming-console.jpg"
+  },
+  {
+    "id": "4",
+    "orderId": "#ORD-7245",
+    "customer": "Emily Davis",
+    "product": "Nintendo Switch",
+    "date": "12/01/2025",
+    "amount": "$89.99",
+    "status": "Shipped",
+    "image": "/nintendo-switch-gaming-console.jpg"
+  },
+  {
+    "id": "5",
+    "orderId": "#ORD-7245",
+    "customer": "Emily Davis",
+    "product": "Nintendo Switch",
+    "date": "12/01/2025",
+    "amount": "$89.99",
+    "status": "Pending",
+    "image": "/nintendo-switch-gaming-console.jpg"
+  },
+  {
+    "id": "6",
+    "orderId": "#ORD-7245",
+    "customer": "Emily Davis",
+    "product": "Nintendo Switch",
+    "date": "12/01/2025",
+    "amount": "$89.99",
+    "status": "Delivered",
+    "image": "/nintendo-switch-gaming-console.jpg"
+  },
+  {
+    "id": "7",
+    "orderId": "#ORD-7245",
+    "customer": "Emily Davis",
+    "product": "Nintendo Switch",
+    "date": "12/01/2025",
+    "amount": "$89.99",
+    "status": "Shipped",
+    "image": "/nintendo-switch-gaming-console.jpg"
+  },
+  {
+    "id": "8",
+    "orderId": "#ORD-7245",
+    "customer": "Emily Davis",
+    "product": "Nintendo Switch",
+    "date": "12/01/2025",
+    "amount": "$89.99",
+    "status": "Pending",
+    "image": "/nintendo-switch-gaming-console.jpg"
+  },
+  {
+    "id": "9",
+    "orderId": "#ORD-7245",
+    "customer": "Emily Davis",
+    "product": "Nintendo Switch",
+    "date": "12/01/2025",
+    "amount": "$89.99",
+    "status": "Delivered",
+    "image": "/nintendo-switch-gaming-console.jpg"
+  },
+  {
+    "id": "10",
+    "orderId": "#ORD-7245",
+    "customer": "Emily Davis",
+    "product": "Nintendo Switch",
+    "date": "12/01/2025",
+    "amount": "$89.99",
+    "status": "Shipped",
+    "image": "/nintendo-switch-gaming-console.jpg"
+  }
+]

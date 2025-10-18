@@ -2,6 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import { Layout } from "../layouts/Layout";
 import { Dashboard } from "../pages/Dashboard/Dashboard";
 import { Login } from "../pages/Auth/Login";
+import OrdersTable from "../pages/Orders/Orders";
+import OrdersPage from "../pages/Orders/Orders";
 
 const router = createBrowserRouter([
   {
@@ -15,7 +17,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/orders",
-        element: <h1 className="text-3xl font-bold">Orders Page</h1>,
+        element: <OrdersPage />,
       },
       {
         path: "/products",
