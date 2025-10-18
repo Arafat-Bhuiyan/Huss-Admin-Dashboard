@@ -4,6 +4,9 @@ import Orders from "../../assets/images/orders.svg";
 import Customers from "../../assets/images/customers.svg";
 import Products from "../../assets/images/products.svg";
 import ChartsSection from "./ChartsSection";
+import plus from "../../assets/icons/plusIcon.png";
+import promotion from "../../assets/icons/promotionIcon.png";
+import plus2 from "../../assets/icons/plusIcon2.svg";
 
 // statsData.js
 const statsData = [
@@ -36,7 +39,7 @@ const statsData = [
     value: "843",
     change: "6.8%",
     comparison: "vs last month",
-    iconBg: "#DCFCE7",
+    iconBg: "",
     icon: "Customers",
   },
 ];
@@ -93,6 +96,45 @@ export const Dashboard = () => {
       </div>
 
       <ChartsSection />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {/* Add Product */}
+        <div className="p-4 bg-white rounded-2xl flex flex-col items-start justify-between gap-4">
+          <div className="flex items-center justify-start gap-5">
+            <img src={plus} />
+            <h1 className="text-zinc-800 text-xl font-semibold leading-snug">
+              Add New Product
+            </h1>
+          </div>
+          <div className="text-zinc-800 text-base font-normal leading-snug">
+            Quickly add a new product to your inventory with all details.
+          </div>
+          <div className="w-full h-12 p-2.5 bg-yellow-500 rounded-md inline-flex justify-center items-center gap-2.5">
+            <img src={plus2} alt="" />
+            <div className="text-white text-base font-bold leading-snug">
+              Add Product
+            </div>
+          </div>
+        </div>
+
+        {/* Promotion */}
+        <div className="p-4 bg-white rounded-2xl flex flex-col items-start justify-between gap-4">
+          <div className="flex items-center justify-start gap-5">
+            <img src={promotion} />
+            <h1 className="text-zinc-800 text-xl font-semibold leading-snug">
+              Create Promotion
+            </h1>
+          </div>
+          <div className="text-zinc-800 text-base font-normal leading-snug">
+            Set up discounts, coupon codes, or special offers for your products.
+          </div>
+          <div className="w-full h-12 p-2.5 bg-rose-400 rounded-md inline-flex justify-center items-center gap-2.5">
+            <div className="text-white text-base font-bold leading-snug">
+              Create Offer
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
