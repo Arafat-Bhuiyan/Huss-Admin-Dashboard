@@ -3,7 +3,11 @@ import { Layout } from "../layouts/Layout";
 import { Dashboard } from "../pages/Dashboard/Dashboard";
 import { Login } from "../pages/Auth/Login";
 import OrdersPage from "../pages/Orders/Orders";
+
+import { Promotions } from "../pages/Promotions/Promotions";
+
 import Products from "../pages/Products/Products";
+
 
 const router = createBrowserRouter([
   {
@@ -25,7 +29,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/promotions",
-        element: <h1 className="text-3xl font-bold">Promotions Page</h1>,
+        element: <Promotions />,
       },
       {
         path: "/settings",
