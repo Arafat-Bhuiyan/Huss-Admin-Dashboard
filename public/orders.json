@@ -1,102 +1,102 @@
 [
   {
     "id": "1",
-    "orderId": "#ORD-7245",
+    "orderId": "#ORD-1001",
     "customer": "Emily Davis",
     "product": "Nintendo Switch",
     "date": "12/01/2025",
-    "amount": "$89.99",
+    "amount": "$299.99",
     "status": "Shipped",
     "image": "/nintendo-switch-gaming-console.jpg"
   },
   {
     "id": "2",
-    "orderId": "#ORD-7245",
-    "customer": "Emily Davis",
-    "product": "Nintendo Switch",
-    "date": "12/01/2025",
-    "amount": "$89.99",
+    "orderId": "#ORD-1002",
+    "customer": "Michael Johnson",
+    "product": "Apple AirPods Pro",
+    "date": "13/01/2025",
+    "amount": "$249.00",
     "status": "Pending",
-    "image": "/nintendo-switch-gaming-console.jpg"
+    "image": "/apple-airpods-pro.jpg"
   },
   {
     "id": "3",
-    "orderId": "#ORD-7245",
-    "customer": "Emily Davis",
-    "product": "Nintendo Switch",
-    "date": "12/01/2025",
-    "amount": "$89.99",
+    "orderId": "#ORD-1003",
+    "customer": "Sophia Brown",
+    "product": "Samsung Galaxy S24",
+    "date": "14/01/2025",
+    "amount": "$999.00",
     "status": "Delivered",
-    "image": "/nintendo-switch-gaming-console.jpg"
+    "image": "/samsung-galaxy-s24.jpg"
   },
   {
     "id": "4",
-    "orderId": "#ORD-7245",
-    "customer": "Emily Davis",
-    "product": "Nintendo Switch",
-    "date": "12/01/2025",
-    "amount": "$89.99",
+    "orderId": "#ORD-1004",
+    "customer": "James Wilson",
+    "product": "PlayStation 5",
+    "date": "15/01/2025",
+    "amount": "$499.99",
     "status": "Shipped",
-    "image": "/nintendo-switch-gaming-console.jpg"
+    "image": "/playstation-5-console.jpg"
   },
   {
     "id": "5",
-    "orderId": "#ORD-7245",
-    "customer": "Emily Davis",
-    "product": "Nintendo Switch",
-    "date": "12/01/2025",
-    "amount": "$89.99",
+    "orderId": "#ORD-1005",
+    "customer": "Olivia Martinez",
+    "product": "Dell XPS 13 Laptop",
+    "date": "16/01/2025",
+    "amount": "$1,199.00",
     "status": "Pending",
-    "image": "/nintendo-switch-gaming-console.jpg"
+    "image": "/dell-xps-13.jpg"
   },
   {
     "id": "6",
-    "orderId": "#ORD-7245",
-    "customer": "Emily Davis",
-    "product": "Nintendo Switch",
-    "date": "12/01/2025",
-    "amount": "$89.99",
+    "orderId": "#ORD-1006",
+    "customer": "Ethan Anderson",
+    "product": "GoPro Hero 12",
+    "date": "17/01/2025",
+    "amount": "$399.00",
     "status": "Delivered",
-    "image": "/nintendo-switch-gaming-console.jpg"
+    "image": "/gopro-hero-12.jpg"
   },
   {
     "id": "7",
-    "orderId": "#ORD-7245",
-    "customer": "Emily Davis",
-    "product": "Nintendo Switch",
-    "date": "12/01/2025",
-    "amount": "$89.99",
+    "orderId": "#ORD-1007",
+    "customer": "Ava Thompson",
+    "product": "Apple MacBook Air M3",
+    "date": "18/01/2025",
+    "amount": "$1,299.00",
     "status": "Shipped",
-    "image": "/nintendo-switch-gaming-console.jpg"
+    "image": "/macbook-air-m3.jpg"
   },
   {
     "id": "8",
-    "orderId": "#ORD-7245",
-    "customer": "Emily Davis",
-    "product": "Nintendo Switch",
-    "date": "12/01/2025",
-    "amount": "$89.99",
+    "orderId": "#ORD-1008",
+    "customer": "William Lee",
+    "product": "Sony WH-1000XM5 Headphones",
+    "date": "19/01/2025",
+    "amount": "$379.99",
     "status": "Pending",
-    "image": "/nintendo-switch-gaming-console.jpg"
+    "image": "/sony-wh-1000xm5.jpg"
   },
   {
     "id": "9",
-    "orderId": "#ORD-7245",
-    "customer": "Emily Davis",
-    "product": "Nintendo Switch",
-    "date": "12/01/2025",
-    "amount": "$89.99",
+    "orderId": "#ORD-1009",
+    "customer": "Isabella Garcia",
+    "product": "Apple Watch Ultra 2",
+    "date": "20/01/2025",
+    "amount": "$799.00",
     "status": "Delivered",
-    "image": "/nintendo-switch-gaming-console.jpg"
+    "image": "/apple-watch-ultra-2.jpg"
   },
   {
     "id": "10",
-    "orderId": "#ORD-7245",
-    "customer": "Emily Davis",
-    "product": "Nintendo Switch",
-    "date": "12/01/2025",
-    "amount": "$89.99",
+    "orderId": "#ORD-1010",
+    "customer": "Liam Miller",
+    "product": "Logitech MX Master 3S Mouse",
+    "date": "21/01/2025",
+    "amount": "$99.99",
     "status": "Shipped",
-    "image": "/nintendo-switch-gaming-console.jpg"
+    "image": "/logitech-mx-master-3s.jpg"
   }
 ]
