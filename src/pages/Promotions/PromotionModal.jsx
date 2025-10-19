@@ -40,7 +40,7 @@ export default function PromotionModal({ promotion, onSave, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg p-8 max-w-md w-full">
+      <div className="bg-white rounded-lg p-8 max-w-lg w-full">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {promotion ? "Edit Promotion" : "Create New Promotion"}
         </h2>
@@ -131,14 +131,14 @@ export default function PromotionModal({ promotion, onSave, onClose }) {
           <div className="flex gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-amber-400 text-gray-900 font-semibold rounded hover:bg-amber-500 transition-colors"
+              className="flex-1 px-4 py-2 bg-[#FFBA07] text-white font-semibold rounded transition-colors"
             >
               {promotion ? "Save Changes" : "Save Changes"}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-900 font-semibold rounded hover:bg-gray-300 transition-colors"
+              className="flex-1 px-4 py-2 bg-[#FAF8F2] border text-gray-900 font-semibold rounded transition-colors"
             >
               Cancel
             </button>
