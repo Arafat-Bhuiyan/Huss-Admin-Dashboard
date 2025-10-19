@@ -10,6 +10,7 @@ export const Login = () => {
     console.log({ email, password, remember });
     setEmail("");
     setPassword("");
+    window.location.href = "/";
   };
 
   return (

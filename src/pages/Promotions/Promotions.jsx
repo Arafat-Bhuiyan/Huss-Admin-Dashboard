@@ -61,7 +61,7 @@ export function Promotions() {
   };
 
   return (
-    <div className="min-h-screen bg-amber-50">
+    <div className="min-h-screen">
       {/* Header */}
       <div className="px-8 py-6">
         <h1 className="text-2xl font-semibold text-gray-900">Promotions</h1>
