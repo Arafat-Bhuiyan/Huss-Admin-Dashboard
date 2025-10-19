@@ -37,7 +37,7 @@ export const Navbar = () => {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `${linkClasses} ${isActive ? "text-[#FFBA07] border-b-2 border-[#FFBA07] border-b-2 border-[#FFBA07]" : "text-[#363636]"}`
+              `${linkClasses} ${isActive ? "text-[#FFBA07] border-b-2 border-[#FFBA07]" : "text-[#363636]"}`
             }
           >
             Dashboard

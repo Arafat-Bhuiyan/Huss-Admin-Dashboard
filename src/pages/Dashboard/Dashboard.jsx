@@ -1,4 +1,3 @@
-import up from "../../assets/images/up.svg";
 import Revenue from "../../assets/images/revenue.svg";
 import Orders from "../../assets/images/orders.svg";
 import Customers from "../../assets/images/customers.svg";
