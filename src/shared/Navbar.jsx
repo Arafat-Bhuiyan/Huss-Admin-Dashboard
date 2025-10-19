@@ -13,7 +13,7 @@ export const Navbar = () => {
   const linkClasses =
     "text-xl font-semibold font-inter transition-colors duration-200";
   return (
-    <div className="bg-white pt-10 pb-5 px-28 flex flex-col gap-9">
+    <div className="bg-white pt-10 pb-5 w-10/12 mx-auto flex flex-col gap-9">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-[#363636]">
           Shop<span className="text-[#FFBA07]">Nest</span>
@@ -37,7 +37,7 @@ export const Navbar = () => {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `${linkClasses} ${isActive ? "text-[#FFBA07] border-b-2 border-[#FFBA07] border-b-2 border-[#FFBA07]" : "text-[#363636]"}`
+              `${linkClasses} ${isActive ? "text-[#FFBA07] border-b-2 border-[#FFBA07]" : "text-[#363636]"}`
             }
           >
             Dashboard
