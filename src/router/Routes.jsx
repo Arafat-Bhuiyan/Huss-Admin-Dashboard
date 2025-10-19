@@ -7,6 +7,7 @@ import OrdersPage from "../pages/Orders/Orders";
 import { Promotions } from "../pages/Promotions/Promotions";
 
 import Products from "../pages/Products/Products";
+import TermsAndPolicies from "../pages/Settings/TermsAndPolicies";
 
 
 const router = createBrowserRouter([
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/settings",
-        element: <h1 className="text-3xl font-bold">Settings Page</h1>,
+        element: <TermsAndPolicies />,
       },
     ],
   },
