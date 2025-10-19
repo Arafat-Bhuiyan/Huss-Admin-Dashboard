@@ -8,6 +8,7 @@ import { Promotions } from "../pages/Promotions/Promotions";
 
 import Products from "../pages/Products/Products";
 import TermsAndPolicies from "../pages/Settings/TermsAndPolicies";
+import AdminProfileSettings from "../pages/Profile/AdminProfileSettings";
 
 
 const router = createBrowserRouter([
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "/settings",
         element: <TermsAndPolicies />,
+      },
+      {
+        path: "/profile",
+        element: <AdminProfileSettings />,
       },
     ],
   },

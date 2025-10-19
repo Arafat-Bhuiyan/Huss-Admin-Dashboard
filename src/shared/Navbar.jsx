@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import profile from "../assets/images/profile.png";
 import logoutIcon from "../assets/images/logout.svg";
 
@@ -18,7 +18,10 @@ export const Navbar = () => {
         <h1 className="text-3xl font-bold text-[#363636]">
           Shop<span className="text-[#FFBA07]">Nest</span>
         </h1>
-        <div className="flex items-center gap-4">
+        <Link
+          to={"/profile"}
+          className="flex items-center gap-4 cursor-pointer"
+        >
           <img src={profile} alt="" />
           <div className="flex flex-col justify-center">
             <h1 className="text-xl font-semibold text-[#363636]">
@@ -28,7 +31,7 @@ export const Navbar = () => {
               Store Admin
             </h3>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Navbar */}
@@ -37,7 +40,11 @@ export const Navbar = () => {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              `${linkClasses} ${isActive ? "text-[#FFBA07] border-b-2 border-[#FFBA07]" : "text-[#363636]"}`
+              `${linkClasses} ${
+                isActive
+                  ? "text-[#FFBA07] border-b-2 border-[#FFBA07]"
+                  : "text-[#363636]"
+              }`
             }
           >
             Dashboard
@@ -46,7 +53,11 @@ export const Navbar = () => {
           <NavLink
             to="/orders"
             className={({ isActive }) =>
-              `${linkClasses} ${isActive ? "text-[#FFBA07] border-b-2 border-[#FFBA07]" : "text-[#363636]"}`
+              `${linkClasses} ${
+                isActive
+                  ? "text-[#FFBA07] border-b-2 border-[#FFBA07]"
+                  : "text-[#363636]"
+              }`
             }
           >
             Orders
@@ -55,7 +66,11 @@ export const Navbar = () => {
           <NavLink
             to="/products"
             className={({ isActive }) =>
-              `${linkClasses} ${isActive ? "text-[#FFBA07] border-b-2 border-[#FFBA07]" : "text-[#363636]"}`
+              `${linkClasses} ${
+                isActive
+                  ? "text-[#FFBA07] border-b-2 border-[#FFBA07]"
+                  : "text-[#363636]"
+              }`
             }
           >
             Products
@@ -64,7 +79,11 @@ export const Navbar = () => {
           <NavLink
             to="/promotions"
             className={({ isActive }) =>
-              `${linkClasses} ${isActive ? "text-[#FFBA07] border-b-2 border-[#FFBA07]" : "text-[#363636]"}`
+              `${linkClasses} ${
+                isActive
+                  ? "text-[#FFBA07] border-b-2 border-[#FFBA07]"
+                  : "text-[#363636]"
+              }`
             }
           >
             Promotions
@@ -73,7 +92,11 @@ export const Navbar = () => {
           <NavLink
             to="/settings"
             className={({ isActive }) =>
-              `${linkClasses} ${isActive ? "text-[#FFBA07] border-b-2 border-[#FFBA07]" : "text-[#363636]"}`
+              `${linkClasses} ${
+                isActive
+                  ? "text-[#FFBA07] border-b-2 border-[#FFBA07]"
+                  : "text-[#363636]"
+              }`
             }
           >
             Settings
