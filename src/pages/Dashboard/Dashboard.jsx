@@ -53,7 +53,7 @@ const icons = {
 
 export const Dashboard = () => {
   return (
-    <div className="py-8 px-28 flex flex-col gap-8">
+    <div className="py-8 flex flex-col gap-8">
       <div>
         <div className="w-44 justify-start text-[#363636] text-3xl font-semibold font-inter mb-2">
           Dashboard

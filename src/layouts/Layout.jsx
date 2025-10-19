@@ -7,7 +7,9 @@ export const Layout = () => {
     <div>
       <Navbar />
       <div className="bg-[#FAF8F2]">
-        <Outlet />
+        <div className="w-10/12 mx-auto">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

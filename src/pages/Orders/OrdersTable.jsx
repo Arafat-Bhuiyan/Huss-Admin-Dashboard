@@ -38,7 +38,7 @@ export default function OrdersTable({ onViewDetails }) {
   });
 
   return (
-    <div className="p-8">
+    <div className="py-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-semibold text-[#363636] mb-2">
