@@ -3,8 +3,10 @@ import Orders from "../../assets/images/orders.svg";
 import Unsold from "../../assets/images/unsold.svg";
 import Sold from "../../assets/images/sold.svg";
 import { useState } from "react";
-import orders from "../../../public/orders.json";
+import products from "../../../public/products.json";
 import { ChevronDown, Search } from "lucide-react";
+import EditProductModal from "./EditProduct";
+import AddProductModal from "./AddProduct";
 
 // statsData.js
 const statsData = [
@@ -41,24 +43,78 @@ const icons = {
   Sold,
 };
 export default function ProductsPage() {
-  const [selectedStatus, setSelectedStatus] = useState("Status");
+  const [selectedStatus, setSelectedStatus] = useState("All Categories");
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const statuses = ["Status", "Shipped", "Pending", "Delivered"];
+  const statuses = [
+    "All Categories",
+    "Survey Equipment",
+    "Testing & Lab Equipment",
+    "Electronics Equipment",
+    "Gaming Equipment",
+    "Accessories Equipment",
+  ];
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [productList, setProductList] = useState(products);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  // ✅ Filter Logic (Search + Status)
-  const filteredOrders = orders.filter((order) => {
-    const matchesStatus =
-      selectedStatus === "Status" ||
-      order.status.toLowerCase() === selectedStatus.toLowerCase();
+  // ✅ Filter Logic (Search + Category)
+  const filteredProducts = productList.filter((product) => {
+    const matchesCategory =
+      selectedStatus === "All Categories" ||
+      product.category.toLowerCase().includes(selectedStatus.toLowerCase());
 
-    // 🔹 Only check orderId against searchTerm
     const matchesSearch =
       searchTerm === "" ||
-      order.orderId.toLowerCase().includes(searchTerm.toLowerCase().trim());
+      product.productName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase().trim());
 
-    return matchesStatus && matchesSearch;
+    return matchesCategory && matchesSearch;
   });
+
+  const handleEdit = (product) => {
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSave = (updatedProduct) => {
+    const updatedList = productList.map((p) =>
+      p.id === updatedProduct.id ? updatedProduct : p
+    );
+    setProductList(updatedList);
+    setIsEditModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setIsEditModalOpen(false);
+  };
+
+  const handleDelete = (product) => {
+    if (
+      window.confirm(
+        `Are you sure you want to delete "${product.productName}"?`
+      )
+    ) {
+      const updatedList = productList.filter((p) => p.id !== product.id);
+      setProductList(updatedList);
+    }
+  };
+
+  const handleAddProduct = (newProduct) => {
+    const newProductWithId = {
+      ...newProduct,
+      id: Date.now(), // unique id generate
+      image: newProduct.image
+        ? URL.createObjectURL(newProduct.image)
+        : "/default-product.png", // fallback image if not uploaded
+    };
+
+    setProductList((prevList) => [newProductWithId, ...prevList]);
+    setIsAddModalOpen(false);
+  };
+
   return (
     <div className="py-8 flex flex-col gap-5">
       <div>
@@ -98,7 +154,10 @@ export default function ProductsPage() {
       {/* Order List Title */}
       <div className="flex justify-between items-center gap-4">
         <h2 className="text-2xl font-semibold text-[#363636]">All Products</h2>
-        <button className="w-56 h-12 p-2.5 bg-[#FFBA07] rounded-[10px] inline-flex justify-center items-center gap-2.5 hover:bg-yellow-500 transition">
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="w-56 h-12 p-2.5 bg-[#FFBA07] rounded-[10px] inline-flex justify-center items-center gap-2.5 hover:bg-yellow-500 transition"
+        >
           <span className="text-white text-xl font-semibold leading-snug">
             + Add Product
           </span>
@@ -112,12 +171,12 @@ export default function ProductsPage() {
           {/* Filter Button */}
           <button
             onClick={() => setIsOpen((prev) => !prev)}
-            className="w-48 h-10 pl-4 pr-3 py-2.5 bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-[#BEBBBB] inline-flex justify-between items-center gap-2.5"
+            className="w-52 h-10 pl-4 pr-3 py-2.5 bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-[#BEBBBB] inline-flex justify-between items-center gap-2.5"
           >
             <span className="text-neutral-700 text-sm font-semibold leading-snug">
               {selectedStatus === "Status"
-                ? "Filter by Status"
-                : `Filter by ${selectedStatus}`}
+                ? "All Categories"
+                : `${selectedStatus}`}
             </span>
             <ChevronDown
               className={`transition-transform duration-200 ${
@@ -152,13 +211,114 @@ export default function ProductsPage() {
           <Search className="w-5 h-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Search by Order ID"
+            placeholder="Search products"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="outline-none text-gray-700 placeholder-gray-400 w-48"
           />
         </div>
       </div>
+      {/* Table */}
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-200 bg-gray-50">
+                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                  Image
+                </th>
+                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                  Product Name
+                </th>
+                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                  Price
+                </th>
+                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                  Stock
+                </th>
+                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                  Category
+                </th>
+                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {filteredProducts.length > 0 ? (
+                filteredProducts.map((product) => (
+                  <tr
+                    key={product.id}
+                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-6 py-4 text-center">
+                      <img
+                        src={product.image}
+                        alt={product.productName}
+                        className="w-16 h-16 object-cover rounded-md mx-auto"
+                      />
+                    </td>
+                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
+                      {product.productName}
+                    </td>
+                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
+                      ${product.price.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
+                      {product.stock}
+                    </td>
+                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
+                      {product.category}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2 h-full">
+                        <button
+                          onClick={() => handleEdit(product)}
+                          className="px-4 py-1 bg-[#FFBA07] text-white rounded-md text-sm font-medium hover:bg-yellow-500 transition"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(product)}
+                          className="px-4 py-1 bg-[#DB0000] text-white rounded-md text-sm font-medium hover:bg-red-600 transition"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="6"
+                    className="text-center py-6 text-gray-500 text-sm"
+                  >
+                    No products found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Edit Modal */}
+      {isEditModalOpen && (
+        <EditProductModal
+          product={selectedProduct}
+          onClose={handleCloseModal}
+          onSave={handleSave}
+        />
+      )}
+
+      {isAddModalOpen && (
+        <AddProductModal
+          onClose={() => setIsAddModalOpen(false)}
+          onSave={handleAddProduct}
+        />
+      )}
     </div>
   );
 }

@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "image": "https://i.ibb.co.com/tTwpfbj6/product-image.png",
+    "productName": "Digital Camera",
+    "price": 55000,
+    "stock": 25,
+    "category": "Electronics",
+    "actions": "Edit / Delete"
+  },
+  {
+    "id": 2,
+    "image": "https://i.ibb.co.com/tTwpfbj6/product-image.png",
+    "productName": "Camera Tripod Stand",
+    "price": 2500,
+    "stock": 80,
+    "category": "Accessories",
+    "actions": "Edit / Delete"
+  },
+  {
+    "id": 3,
+    "image": "https://i.ibb.co.com/tTwpfbj6/product-image.png",
+    "productName": "Digital Microscope",
+    "price": 12000,
+    "stock": 40,
+    "category": "Lab Equipment",
+    "actions": "Edit / Delete"
+  },
+  {
+    "id": 4,
+    "image": "https://i.ibb.co.com/tTwpfbj6/product-image.png",
+    "productName": "Survey Drone",
+    "price": 95000,
+    "stock": 10,
+    "category": "Survey Equipment",
+    "actions": "Edit / Delete"
+  },
+  {
+    "id": 5,
+    "image": "https://i.ibb.co.com/tTwpfbj6/product-image.png",
+    "productName": "Gaming Controller",
+    "price": 4500,
+    "stock": 60,
+    "category": "Gaming Equipment",
+    "actions": "Edit / Delete"
+  }
+]
