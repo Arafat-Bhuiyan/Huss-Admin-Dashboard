@@ -31,7 +31,12 @@ ChartJS.register(
 const ChartsSection = () => {
   // ✅ Dashboard Data
   const [dashboardData] = useState({
-    salesAnalytics: [1000, 1800, 1500, 1900, 1700, 3000, 2800],
+    monthlySales: [1000, 1800, 1500, 1900, 1700, 3000, 2800],
+    yearlySales: [
+      12000, 15000, 18000, 22000, 21000, 25000, 30000, 28000, 32000, 31000,
+      29000, 34000,
+    ],
+
     topCategories: [
       { label: "Survey Equipment", value: 25, color: "#FFC98F" },
       { label: "Testing & Lab Equipment", value: 20, color: "#EAE2B7" },
@@ -41,13 +46,35 @@ const ChartsSection = () => {
     ],
   });
 
-  // ✅ Line Chart Data
+  // ✅ State for selected view (monthly/yearly)
+  const [selectedView, setSelectedView] = useState("monthly");
+
+  // ✅ Dynamic line chart data based on selectedView
   const lineChartData = {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    labels:
+      selectedView === "monthly"
+        ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        : [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ],
     datasets: [
       {
         label: "Revenue",
-        data: dashboardData.salesAnalytics,
+        data:
+          selectedView === "monthly"
+            ? dashboardData.monthlySales
+            : dashboardData.yearlySales,
         borderColor: "#FFBA07",
         borderWidth: 2,
         fill: true,
@@ -100,9 +127,7 @@ const ChartsSection = () => {
     datasets: [
       {
         data: dashboardData.topCategories.map((item) => item.value),
-        backgroundColor: dashboardData.topCategories.map(
-          (item) => item.color
-        ),
+        backgroundColor: dashboardData.topCategories.map((item) => item.color),
         borderWidth: 0,
       },
     ],
@@ -139,13 +164,30 @@ const ChartsSection = () => {
       {/* Line Chart */}
       <div className="bg-white rounded-xl shadow-sm p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-md font-semibold text-gray-900">Sales Analytics</h3>
+          <h3 className="text-md font-semibold text-gray-900">
+            Sales Analytics
+          </h3>
           <div className="flex space-x-3 text-sm">
-            <button className="bg-[#0EA5E9] text-white px-3 py-1 rounded-full">
-              Weekly
+            <button
+              onClick={() => setSelectedView("monthly")}
+              className={`px-3 py-1 rounded-full ${
+                selectedView === "monthly"
+                  ? "bg-[#0EA5E9] text-white"
+                  : "text-gray-500"
+              }`}
+            >
+              Monthly
             </button>
-            <button className="text-gray-500">Monthly</button>
-            <button className="text-gray-500">Yearly</button>
+            <button
+              onClick={() => setSelectedView("yearly")}
+              className={`px-3 py-1 rounded-full ${
+                selectedView === "yearly"
+                  ? "bg-[#0EA5E9] text-white"
+                  : "text-gray-500"
+              }`}
+            >
+              Yearly
+            </button>
           </div>
         </div>
         <div className="h-64">

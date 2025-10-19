@@ -13,32 +13,24 @@ const statsData = [
   {
     title: "Total Revenue",
     value: "$24,589.32",
-    change: "12.5%",
-    comparison: "vs last month",
     iconBg: "#FFF0C8",
     icon: "Revenue",
   },
   {
     title: "Total Orders",
     value: "1,243",
-    change: "8.2%",
-    comparison: "vs last month",
     iconBg: "#FDD2D2",
     icon: "Orders",
   },
   {
     title: "Total Products",
     value: "156",
-    change: "4.7%",
-    comparison: "vs last month",
     iconBg: "#F3E8FF",
     icon: "Products",
   },
   {
     title: "Total Customers",
     value: "843",
-    change: "6.8%",
-    comparison: "vs last month",
     iconBg: "",
     icon: "Customers",
   },
@@ -74,15 +66,6 @@ export const Dashboard = () => {
               </div>
               <div className="text-[#363636] text-3xl font-semibold font-inter">
                 {item.value}
-              </div>
-              <div className="flex items-center gap-1">
-                <img src={up} alt="" className="w-3" />
-                <span className="text-[#FFBA07] text-xl font-medium font-inter">
-                  {item.change}
-                </span>
-                <span className="text-[#363636] text-xl font-medium font-inter">
-                  {item.comparison}
-                </span>
               </div>
             </div>
             <div
