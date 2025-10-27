@@ -176,7 +176,7 @@ const ChartsSection = () => {
                   : "text-gray-500"
               }`}
             >
-              Monthly
+              Weekly
             </button>
             <button
               onClick={() => setSelectedView("yearly")}
@@ -186,7 +186,7 @@ const ChartsSection = () => {
                   : "text-gray-500"
               }`}
             >
-              Yearly
+              Monthly
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import profile from "../assets/images/profile.png";
 import logoutIcon from "../assets/images/logout.svg";
+import logo from "../assets/images/mtech-logo1.png";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -15,9 +16,9 @@ export const Navbar = () => {
   return (
     <div className="bg-white pt-10 pb-5 w-10/12 mx-auto flex flex-col gap-9">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-[#363636]">
-          Shop<span className="text-[#FFBA07]">Nest</span>
-        </h1>
+        <Link to="/">
+          <img src={logo} alt="Mtech logo" className="h-9" />
+        </Link>
         <Link
           to={"/profile"}
           className="flex items-center gap-4 cursor-pointer"

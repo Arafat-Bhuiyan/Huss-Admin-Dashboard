@@ -1,6 +1,6 @@
 import Revenue from "../../assets/images/revenue.svg";
 import Orders from "../../assets/images/orders.svg";
-import Customers from "../../assets/images/customers.svg";
+import Customers from "../../assets/images/customers.png";
 import Products from "../../assets/images/products.svg";
 import ChartsSection from "./ChartsSection";
 import plus from "../../assets/icons/plusIcon.png";
@@ -30,7 +30,7 @@ const statsData = [
   {
     title: "Total Customers",
     value: "843",
-    iconBg: "",
+    iconBg: "#DCFCE7",
     icon: "Customers",
   },
 ];

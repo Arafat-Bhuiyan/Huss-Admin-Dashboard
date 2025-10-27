@@ -38,7 +38,7 @@ export const Login = () => {
           </label>
           <input
             type="email"
-            placeholder="admin@shopnest.com"
+            placeholder="admin@mtech.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
