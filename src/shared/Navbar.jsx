@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import profile from "../assets/images/profile.png";
 import logoutIcon from "../assets/images/logout.svg";
 import logo from "../assets/images/mtech-logo1.png";
+import { ChevronDown } from "lucide-react";
 
 export const Navbar = () => {
   const navigate = useNavigate();
+  const [isAdminRoleOpen, setIsAdminRoleOpen] = useState(false);
 
   const handleLogout = () => {
     console.log("Logged out");
@@ -40,6 +43,7 @@ export const Navbar = () => {
         <div className="flex items-center gap-10">
           <NavLink
             to="/"
+            end
             className={({ isActive }) =>
               `${linkClasses} ${
                 isActive
@@ -49,6 +53,19 @@ export const Navbar = () => {
             }
           >
             Dashboard
+          </NavLink>
+
+          <NavLink
+            to="/users"
+            className={({ isActive }) =>
+              `${linkClasses} ${
+                isActive
+                  ? "text-[#FFBA07] border-b-2 border-[#FFBA07]"
+                  : "text-[#363636]"
+              }`
+            }
+          >
+            User
           </NavLink>
 
           <NavLink
@@ -78,6 +95,19 @@ export const Navbar = () => {
           </NavLink>
 
           <NavLink
+            to="/wishlist"
+            className={({ isActive }) =>
+              `${linkClasses} ${
+                isActive
+                  ? "text-[#FFBA07] border-b-2 border-[#FFBA07]"
+                  : "text-[#363636]"
+              }`
+            }
+          >
+            Wishlist
+          </NavLink>
+
+          <NavLink
             to="/promotions"
             className={({ isActive }) =>
               `${linkClasses} ${
@@ -88,6 +118,19 @@ export const Navbar = () => {
             }
           >
             Promotions
+          </NavLink>
+
+          <NavLink
+            to="/tracking"
+            className={({ isActive }) =>
+              `${linkClasses} ${
+                isActive
+                  ? "text-[#FFBA07] border-b-2 border-[#FFBA07]"
+                  : "text-[#363636]"
+              }`
+            }
+          >
+            Tracking
           </NavLink>
 
           <NavLink
@@ -102,6 +145,33 @@ export const Navbar = () => {
           >
             Settings
           </NavLink>
+
+          <div className="relative">
+            <button
+              onClick={() => setIsAdminRoleOpen((prev) => !prev)}
+              className={`${linkClasses} text-[#363636] flex items-center gap-1`}
+            >
+              <span>Admin Role</span>
+              <ChevronDown
+                className={`w-5 h-5 transition-transform duration-200 ${
+                  isAdminRoleOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {isAdminRoleOpen && (
+              <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-md outline outline-1 outline-[#BEBBBB] z-50">
+                <div
+                  onClick={() => {
+                    // Handle Super Admin click if needed
+                    setIsAdminRoleOpen(false);
+                  }}
+                  className="px-4 py-2 text-sm text-neutral-700 cursor-pointer hover:bg-gray-100"
+                >
+                  Super Admin
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <button

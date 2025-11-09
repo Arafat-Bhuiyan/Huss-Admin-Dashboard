@@ -9,6 +9,7 @@ import { Promotions } from "../pages/Promotions/Promotions";
 import Products from "../pages/Products/Products";
 import TermsAndPolicies from "../pages/Settings/TermsAndPolicies";
 import AdminProfileSettings from "../pages/Profile/AdminProfileSettings";
+import { Users } from "../pages/User/Users";
 
 
 const router = createBrowserRouter([
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Dashboard />,
+      },
+      {
+        path: "/users",
+        element: <Users />,
       },
       {
         path: "/orders",

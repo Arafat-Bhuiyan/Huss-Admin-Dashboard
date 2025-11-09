@@ -1,0 +1,42 @@
+[
+  {
+    "id": "USR001",
+    "name": "Alice Smith",
+    "email": "alice.s@example.com",
+    "registrationDate": "2023-01-15",
+    "totalOrders": 12,
+    "status": "Active"
+  },
+  {
+    "id": "USR002",
+    "name": "Bob Johnson",
+    "email": "bob.j@example.com",
+    "registrationDate": "2023-02-20",
+    "totalOrders": 5,
+    "status": "Disabled"
+  },
+  {
+    "id": "USR003",
+    "name": "Charlie Brown",
+    "email": "charlie.b@example.com",
+    "registrationDate": "2023-03-10",
+    "totalOrders": 20,
+    "status": "Active"
+  },
+  {
+    "id": "USR004",
+    "name": "Diana Prince",
+    "email": "diana.p@example.com",
+    "registrationDate": "2023-04-01",
+    "totalOrders": 8,
+    "status": "Active"
+  },
+  {
+    "id": "USR005",
+    "name": "Eve Adams",
+    "email": "eve.a@example.com",
+    "registrationDate": "2023-05-05",
+    "totalOrders": 0,
+    "status": "Suspended"
+  }
+]
