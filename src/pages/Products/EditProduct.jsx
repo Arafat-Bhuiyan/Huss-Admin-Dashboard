@@ -34,7 +34,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
       description,
       price,
       discount,
-      stock: stockQty,
+      stock: stockStatus,
       stockStatus,
       image,
     };

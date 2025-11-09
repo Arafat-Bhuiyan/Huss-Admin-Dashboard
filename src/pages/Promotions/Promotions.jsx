@@ -23,7 +23,6 @@ export function Promotions() {
     const newPromotion = {
       id: Date.now(),
       ...formData,
-      status: "Active",
     };
     setPromotions([...promotions, newPromotion]);
     setIsModalOpen(false);
@@ -88,7 +87,7 @@ export function Promotions() {
           </h3>
 
           {/* Table */}
-          <div className="overflow-x-auto rounded bg-amber-50">
+          <div className="overflow-x-auto rounded bg-[#FAF8F2]">
             <table className="w-full">
               <thead>
                 <tr className="">
@@ -131,7 +130,13 @@ export function Promotions() {
                       {promotion.endDate}
                     </td>
                     <td className="py-4">
-                      <div className="bg-emerald-100 text-black inline px-4 hover:bg-emerald-100 text-center rounded-full py-1">
+                      <div
+                        className={`inline px-4 text-center rounded-full py-1 ${
+                          promotion.status === "Active"
+                            ? "bg-[#B7FFD0] text-black"
+                            : "bg-red-500 text-white"
+                        }`}
+                      >
                         {promotion.status}
                       </div>
                     </td>

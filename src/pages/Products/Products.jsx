@@ -265,8 +265,14 @@ export default function ProductsPage() {
                     <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
                       ${product.price.toLocaleString()}
                     </td>
-                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
-                      {product.stock}
+                    <td
+                      className={`px-6 py-4 text-center text-base font-medium ${
+                        product.stock === "In Stock"
+                          ? "text-green-500"
+                          : "text-orange-600"
+                      }`}
+                    >
+                      {product.stock}{" "}
                     </td>
                     <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
                       {product.category}

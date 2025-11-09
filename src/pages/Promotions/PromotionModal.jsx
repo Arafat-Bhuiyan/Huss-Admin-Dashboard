@@ -1,42 +1,40 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 
 export default function PromotionModal({ promotion, onSave, onClose }) {
   const [formData, setFormData] = useState({
     name: "",
     discountType: "Flat 20% off",
-    discountAmount: "",
     startDate: "",
     endDate: "",
-    description: "",
-  })
+    status: "Active",
+  });
 
   useEffect(() => {
     if (promotion) {
       setFormData({
         name: promotion.name,
         discountType: promotion.discountType,
-        discountAmount: promotion.discountAmount,
         startDate: promotion.startDate,
         endDate: promotion.endDate,
-        description: promotion.description || "",
-      })
+        status: promotion.status || "Active",
+      });
     }
-  }, [promotion])
+  }, [promotion]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    onSave(formData)
-  }
+    e.preventDefault();
+    onSave(formData);
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -52,7 +50,9 @@ export default function PromotionModal({ promotion, onSave, onClose }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Promotion Name</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">
+              Promotion Name
+            </label>
             <input
               type="text"
               name="name"
@@ -65,7 +65,9 @@ export default function PromotionModal({ promotion, onSave, onClose }) {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Discount Type</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">
+              Discount Type
+            </label>
             <select
               name="discountType"
               value={formData.discountType}
@@ -78,22 +80,11 @@ export default function PromotionModal({ promotion, onSave, onClose }) {
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Discount Amount</label>
-            <input
-              type="text"
-              name="discountAmount"
-              value={formData.discountAmount}
-              onChange={handleChange}
-              placeholder="Enter Amount"
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"
-              required
-            />
-          </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">Start Date</label>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Start Date
+              </label>
               <input
                 type="date"
                 name="startDate"
@@ -104,7 +95,9 @@ export default function PromotionModal({ promotion, onSave, onClose }) {
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">End Date</label>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                End Date
+              </label>
               <input
                 type="date"
                 name="endDate"
@@ -117,15 +110,18 @@ export default function PromotionModal({ promotion, onSave, onClose }) {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Promotion Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
+            <label className="block text-sm font-semibold text-gray-900 mb-2">
+              Status
+            </label>
+            <select
+              name="status"
+              value={formData.status}
               onChange={handleChange}
-              placeholder="Enter any additional details about the promotion (optional)"
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"
-              rows="3"
-            />
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"
+            >
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
           </div>
 
           <div className="flex gap-3 pt-4">
@@ -146,5 +142,5 @@ export default function PromotionModal({ promotion, onSave, onClose }) {
         </form>
       </div>
     </div>
-  )
+  );
 }
