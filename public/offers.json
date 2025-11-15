@@ -1,0 +1,11 @@
+[
+  {
+    "offerId": "OFF-1001",
+    "orderId": "ORD-7245",
+    "productId": "PRO-7245",
+    "productName": "Nintendo Switch",
+    "userId": "USR001",
+    "discountAmount": 200,
+    "date": "2025-11-15"
+  }
+]

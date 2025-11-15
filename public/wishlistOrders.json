@@ -1,0 +1,20 @@
+[
+  {
+    "orderId": "ORD-7245",
+    "productId": "PRO-7245",
+    "productName": "Nintendo Switch",
+    "totalUsers": 5
+  },
+  {
+    "orderId": "ORD-9812",
+    "productId": "PRO-9812",
+    "productName": "iPhone 14 Pro",
+    "totalUsers": 2
+  },
+  {
+    "orderId": "ORD-5531",
+    "productId": "PRO-5531",
+    "productName": "Sony Headphones",
+    "totalUsers": 1
+  }
+]

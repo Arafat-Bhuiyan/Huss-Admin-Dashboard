@@ -10,6 +10,9 @@ import Products from "../pages/Products/Products";
 import TermsAndPolicies from "../pages/Settings/TermsAndPolicies";
 import AdminProfileSettings from "../pages/Profile/AdminProfileSettings";
 import { Users } from "../pages/User/Users";
+import { Wishlist } from "../pages/Wishlist/Wishlist";
+import { Tracking } from "../pages/Tracking/Tracking";
+import WishlistUserListTable from "../pages/Wishlist/WishlistUserListTable";
 
 
 const router = createBrowserRouter([
@@ -35,8 +38,20 @@ const router = createBrowserRouter([
         element: <Products />,
       },
       {
+        path: "/wishlist",
+        element: <Wishlist />,
+      },
+      {
+        path: "/wishlistUserListTable/:orderId",
+        element: <WishlistUserListTable />,
+      },
+      {
         path: "/promotions",
         element: <Promotions />,
+      },
+      {
+        path: "/tracking",
+        element: <Tracking />,
       },
       {
         path: "/settings",
