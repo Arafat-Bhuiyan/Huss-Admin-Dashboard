@@ -38,5 +38,182 @@
     "registrationDate": "2023-05-05",
     "totalOrders": 0,
     "status": "Suspended"
+  },
+
+  {
+    "id": "USR006",
+    "name": "Frank Miller",
+    "email": "frank.m@example.com",
+    "registrationDate": "2023-05-12",
+    "totalOrders": 3,
+    "status": "Active"
+  },
+  {
+    "id": "USR007",
+    "name": "Grace Lee",
+    "email": "grace.l@example.com",
+    "registrationDate": "2023-06-01",
+    "totalOrders": 15,
+    "status": "Active"
+  },
+  {
+    "id": "USR008",
+    "name": "Henry King",
+    "email": "henry.k@example.com",
+    "registrationDate": "2023-06-20",
+    "totalOrders": 1,
+    "status": "Disabled"
+  },
+  {
+    "id": "USR009",
+    "name": "Ivy Turner",
+    "email": "ivy.t@example.com",
+    "registrationDate": "2023-07-05",
+    "totalOrders": 7,
+    "status": "Active"
+  },
+  {
+    "id": "USR010",
+    "name": "Jack Wilson",
+    "email": "jack.w@example.com",
+    "registrationDate": "2023-07-28",
+    "totalOrders": 2,
+    "status": "Suspended"
+  },
+  {
+    "id": "USR011",
+    "name": "Karen Scott",
+    "email": "karen.s@example.com",
+    "registrationDate": "2023-08-03",
+    "totalOrders": 18,
+    "status": "Active"
+  },
+  {
+    "id": "USR012",
+    "name": "Leo Carter",
+    "email": "leo.c@example.com",
+    "registrationDate": "2023-08-20",
+    "totalOrders": 4,
+    "status": "Active"
+  },
+  {
+    "id": "USR013",
+    "name": "Mia Lopez",
+    "email": "mia.l@example.com",
+    "registrationDate": "2023-09-01",
+    "totalOrders": 0,
+    "status": "Disabled"
+  },
+  {
+    "id": "USR014",
+    "name": "Noah Wright",
+    "email": "noah.w@example.com",
+    "registrationDate": "2023-09-22",
+    "totalOrders": 11,
+    "status": "Active"
+  },
+  {
+    "id": "USR015",
+    "name": "Olivia Green",
+    "email": "olivia.g@example.com",
+    "registrationDate": "2023-10-02",
+    "totalOrders": 6,
+    "status": "Active"
+  },
+  {
+    "id": "USR016",
+    "name": "Paul Young",
+    "email": "paul.y@example.com",
+    "registrationDate": "2023-10-19",
+    "totalOrders": 9,
+    "status": "Suspended"
+  },
+  {
+    "id": "USR017",
+    "name": "Quinn Adams",
+    "email": "quinn.a@example.com",
+    "registrationDate": "2023-11-01",
+    "totalOrders": 14,
+    "status": "Active"
+  },
+  {
+    "id": "USR018",
+    "name": "Rachel Baker",
+    "email": "rachel.b@example.com",
+    "registrationDate": "2023-11-18",
+    "totalOrders": 3,
+    "status": "Disabled"
+  },
+  {
+    "id": "USR019",
+    "name": "Samuel Clark",
+    "email": "samuel.c@example.com",
+    "registrationDate": "2023-12-01",
+    "totalOrders": 0,
+    "status": "Active"
+  },
+  {
+    "id": "USR020",
+    "name": "Tina Morgan",
+    "email": "tina.m@example.com",
+    "registrationDate": "2023-12-22",
+    "totalOrders": 10,
+    "status": "Active"
+  },
+  {
+    "id": "USR021",
+    "name": "Umar Shields",
+    "email": "umar.s@example.com",
+    "registrationDate": "2024-01-10",
+    "totalOrders": 5,
+    "status": "Suspended"
+  },
+  {
+    "id": "USR022",
+    "name": "Vera Collins",
+    "email": "vera.c@example.com",
+    "registrationDate": "2024-01-28",
+    "totalOrders": 13,
+    "status": "Active"
+  },
+  {
+    "id": "USR023",
+    "name": "Will Parker",
+    "email": "will.p@example.com",
+    "registrationDate": "2024-02-12",
+    "totalOrders": 4,
+    "status": "Active"
+  },
+  {
+    "id": "USR024",
+    "name": "Xena Harper",
+    "email": "xena.h@example.com",
+    "registrationDate": "2024-02-28",
+    "totalOrders": 2,
+    "status": "Disabled"
+  },
+  {
+    "id": "USR025",
+    "name": "Yusuf Daniels",
+    "email": "yusuf.d@example.com",
+    "registrationDate": "2024-03-11",
+    "totalOrders": 16,
+    "status": "Active"
+  },
+  {
+    "id": "USR026",
+    "name": "Zara Hunt",
+    "email": "zara.h@example.com",
+    "registrationDate": "2024-03-25",
+    "totalOrders": 1,
+    "status": "Active"
+  },
+  {
+    "id": "USR027",
+    "name": "Aaron Pierce",
+    "email": "aaron.p@example.com",
+    "registrationDate": "2024-04-04",
+    "totalOrders": 8,
+    "status": "Suspended"
   }
 ]

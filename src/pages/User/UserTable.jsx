@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Search, EllipsisVertical } from "lucide-react";
+import {
+  ChevronDown,
+  Search,
+  EllipsisVertical,
+  ChevronLeft,
+} from "lucide-react";
 import users from "../../../public/users.json";
 
 export default function UserTable({ onEdit, onDelete }) {
+  const [activePage, setActivePage] = useState(1);
   const [selectedStatus, setSelectedStatus] = useState("All Users");
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,8 +50,11 @@ export default function UserTable({ onEdit, onDelete }) {
   useEffect(() => {
     if (headerCheckboxRef.current) {
       const allFilteredIds = filteredUsers.map((u) => u.id);
-      const allVisibleSelected = selectedUserIds.filter((id) => allFilteredIds.includes(id)).length;
-      headerCheckboxRef.current.checked = allVisibleSelected > 0 && allVisibleSelected === filteredUsers.length;
+      const allVisibleSelected = selectedUserIds.filter((id) =>
+        allFilteredIds.includes(id)
+      ).length;
+      headerCheckboxRef.current.checked =
+        allVisibleSelected > 0 && allVisibleSelected === filteredUsers.length;
       headerCheckboxRef.current.indeterminate =
         allVisibleSelected > 0 && allVisibleSelected < filteredUsers.length;
     }
@@ -91,24 +100,44 @@ export default function UserTable({ onEdit, onDelete }) {
   };
 
   const handleBulkAction = (action) => {
-    const targetIds = selectedUserIds.length > 0 ? selectedUserIds : openMenuId ? [openMenuId] : [];
+    const targetIds =
+      selectedUserIds.length > 0
+        ? selectedUserIds
+        : openMenuId
+        ? [openMenuId]
+        : [];
     if (targetIds.length === 0) return;
 
     if (action === "Delete") {
-      if (window.confirm(`Are you sure you want to delete ${targetIds.length} user(s)?`)) {
-        setUserList(userList.filter(user => !targetIds.includes(user.id)));
+      if (
+        window.confirm(
+          `Are you sure you want to delete ${targetIds.length} user(s)?`
+        )
+      ) {
+        setUserList(userList.filter((user) => !targetIds.includes(user.id)));
         setSelectedUserIds([]);
       }
     } else {
-      setUserList(userList.map(user =>
-        targetIds.includes(user.id) ? { ...user, status: action } : user
-      ));
+      setUserList(
+        userList.map((user) =>
+          targetIds.includes(user.id) ? { ...user, status: action } : user
+        )
+      );
     }
     setIsBulkActionOpen(false);
     setOpenMenuId(null);
   };
 
   const isAnySelected = selectedUserIds.length > 0;
+
+  // Pagination Logic
+  const USERS_PER_PAGE = 10;
+  const totalPages = Math.ceil(filteredUsers.length / USERS_PER_PAGE);
+
+  const paginatedUsers = filteredUsers.slice(
+    (activePage - 1) * USERS_PER_PAGE,
+    activePage * USERS_PER_PAGE
+  );
 
   return (
     <div className="py-8">
@@ -206,29 +235,17 @@ export default function UserTable({ onEdit, onDelete }) {
                     className="h-4 w-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500"
                   />
                 </th>
-                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
-                  Name
-                </th>
-                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
-                  Email
-                </th>
-                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
-                  Registration Date
-                </th>
-                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
-                  Total Orders
-                </th>
-                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
-                  Actions
-                </th>
+                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">User</th>
+                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">Email</th>
+                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">Joined</th>
+                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">Orders</th>
+                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">Status</th>
+                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">Action</th>
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.length > 0 ? (
-                filteredUsers.map((user) => (
+              {paginatedUsers.length > 0 ? (
+                paginatedUsers.map((user) => (
                   <tr
                     key={user.id}
                     className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
@@ -241,55 +258,27 @@ export default function UserTable({ onEdit, onDelete }) {
                         className="h-4 w-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500"
                       />
                     </td>
-                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
-                      {user.name}
-                    </td>
-                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
-                      {user.email}
-                    </td>
-                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
-                      {user.registrationDate}
-                    </td>
-                    <td className="px-6 py-4 text-center text-base font-medium text-[#363636]">
-                      {user.totalOrders}
-                    </td>
+                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">{user.name}</td>
+                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">{user.email}</td>
+                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">{user.registrationDate}</td>
+                    <td className="px-6 py-4 text-center text-base font-medium text-[#363636]">{user.totalOrders}</td>
                     <td className="px-6 py-4 text-center text-sm">
-                      <span className={`text-base font-medium ${getBadgeColor(user.status)}`}>
-                        {user.status}
-                      </span>
+                      <span className={`text-base font-medium ${getBadgeColor(user.status)}`}>{user.status}</span>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="relative flex justify-center">
-                        <button onClick={() => setOpenMenuId(openMenuId === user.id ? null : user.id)}>
+                        <button
+                          onClick={() => setOpenMenuId(openMenuId === user.id ? null : user.id)}
+                        >
                           <EllipsisVertical className="w-5 h-5" />
                         </button>
                         {openMenuId === user.id && (
                           <div className="absolute right-0 top-full mt-2 w-40 bg-white rounded-md shadow-lg border z-10">
                             <ul>
-                              <li
-                                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                                onClick={() => handleBulkAction("Active")}
-                              >
-                                Active
-                              </li>
-                              <li
-                                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                                onClick={() => handleBulkAction("Disabled")}
-                              >
-                                Disabled
-                              </li>
-                              <li
-                                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                                onClick={() => handleBulkAction("Suspended")}
-                              >
-                                Suspended
-                              </li>
-                              <li
-                                className="px-4 py-2 text-sm text-red-600 hover:bg-gray-100 cursor-pointer"
-                                onClick={() => handleBulkAction("Delete")}
-                              >
-                                Delete Account
-                              </li>
+                              <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={() => handleBulkAction("Active")}>Active</li>
+                              <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={() => handleBulkAction("Disabled")}>Disabled</li>
+                              <li className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" onClick={() => handleBulkAction("Suspended")}>Suspended</li>
+                              <li className="px-4 py-2 text-sm text-red-600 hover:bg-gray-100 cursor-pointer" onClick={() => handleBulkAction("Delete")}>Delete Account</li>
                             </ul>
                           </div>
                         )}
@@ -299,16 +288,58 @@ export default function UserTable({ onEdit, onDelete }) {
                 ))
               ) : (
                 <tr>
-                  <td
-                    colSpan="9"
-                    className="text-center py-6 text-gray-500 text-sm"
-                  >
-                    No users found.
-                  </td>
+                  <td colSpan="9" className="text-center py-6 text-gray-500 text-sm">No users found.</td>
                 </tr>
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <div className="flex justify-between mt-5">
+        <p className="text-black font-medium text-xl">
+          Showing {filteredUsers.length === 0 ? 0 : (activePage - 1) * USERS_PER_PAGE + 1}
+           {" "}to {Math.min(activePage * USERS_PER_PAGE, filteredUsers.length)} of {filteredUsers.length} users
+        </p>
+        <div>
+          {/* Interactive Pagination */}
+          <div className="flex items-center" style={{ gap: '10px' }}>
+            {/* Left Arrow */}
+            <button
+              className="py-[6px] px-[7px] border border-black rounded-md"
+              style={{ display: 'flex', alignItems: 'center' }}
+              aria-label="Previous Page"
+              onClick={() => setActivePage((prev) => (prev > 1 ? prev - 1 : prev))}
+              disabled={activePage === 1}
+            >
+              <ChevronLeft size={16} />
+            </button>
+            {/* Page Numbers */}
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                className={`py-[2px] px-[8px] border border-black rounded-md font-semibold ${
+                  activePage === page ? 'bg-[#343F4F] text-white' : 'text-black'
+                }`}
+                style={{ minWidth: '32px' }}
+                onClick={() => setActivePage(page)}
+              >
+                {page}
+              </button>
+            ))}
+            {/* Right Arrow */}
+            <button
+              className="py-[6px] px-[7px] border border-black rounded-md"
+              style={{ display: 'flex', alignItems: 'center' }}
+              aria-label="Next Page"
+              onClick={() => setActivePage((prev) => (prev < totalPages ? prev + 1 : prev))}
+              disabled={activePage === totalPages || totalPages === 0}
+            >
+              <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 4l4 4-4 4" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
