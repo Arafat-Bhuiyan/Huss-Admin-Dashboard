@@ -66,7 +66,7 @@ export default function WishlistUserListTable() {
   const isAnySelected = selectedUserIds.length > 0;
 
   return (
-    <>
+    <div className="min-h-screen bg-[#FAF8F2]" >
       <div className="py-8">
         {/* Header */}
         <div className="mb-8">
@@ -167,6 +167,6 @@ export default function WishlistUserListTable() {
         onClose={() => setIsModalOpen(false)}
         user={selectedUser}
       />
-    </>
+    </div>
   );
 }
