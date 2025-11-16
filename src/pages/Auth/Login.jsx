@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../Redux/features/authSlice";
-
+import logo from "../../assets/images/mtech-logo1.png";
 
 const demoUsers = [
   {
@@ -62,11 +62,8 @@ export const Login = () => {
         onSubmit={handleSubmit}
         className="w-[656px] h-[692px] bg-white border border-[#C1C1C1] shadow-lg rounded-xl p-16  flex flex-col gap-6"
       >
-        <div className="flex items-center justify-center">
-          <span className="text-black text-3xl font-bold font-inter">Shop</span>
-          <span className="text-[#FFBA07] text-3xl font-bold font-inter">
-            Nest
-          </span>
+        <div className="flex justify-center mb-2">
+          <img src={logo} alt="Mtech logo" className="w-36 h-9" />
         </div>
         <h2 className="text-center text-zinc-800 text-3xl font-normal font-roboto mb-4">
           Secure Dashboard Login
