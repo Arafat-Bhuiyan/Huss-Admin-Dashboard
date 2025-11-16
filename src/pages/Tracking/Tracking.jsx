@@ -115,7 +115,19 @@ export const Tracking = () => {
                       <td className="px-6 py-4 text-center">{user.orderId}</td>
                       <td className="px-6 py-4 text-center">{user.customer}</td>
                       <td className="px-6 py-4 text-center">{user.trackingNumber}</td>
-                      <td className="px-6 py-4 text-center">{user.status}</td>
+                      <td
+                        className={`px-6 py-4 text-center font-semibold ${
+                          user.status === "Delivered"
+                            ? "text-[#22C55E]"
+                            : user.status === "Pending"
+                            ? "text-[#EA580C]"
+                            : user.status === "Shipped"
+                            ? "text-[#9333EA]"
+                            : "text-[#363636]"
+                        }`}
+                      >
+                        {user.status}
+                      </td>
                       <td className="px-6 py-4 text-center">{user.date}</td>
                       <td className="px-6 py-4 flex items-center justify-center gap-3">
                         <button
