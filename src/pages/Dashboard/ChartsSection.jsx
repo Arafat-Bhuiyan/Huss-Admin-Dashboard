@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 "use client";
 
 import { Line, Pie } from "react-chartjs-2";
@@ -29,6 +30,8 @@ ChartJS.register(
 );
 
 const ChartsSection = () => {
+    // Get user role from redux
+    const { user } = useSelector((state) => state.auth);
   // ✅ Dashboard Data
   const [dashboardData] = useState({
     monthlySales: [1000, 1800, 1500, 1900, 1700, 3000, 2800],
@@ -160,7 +163,7 @@ const ChartsSection = () => {
 
   // ✅ JSX Layout
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className={`grid grid-cols-1${user?.role !== "admin" ? " lg:grid-cols-2" : ""} gap-8`}>
       {/* Line Chart */}
       <div className="bg-white rounded-xl shadow-sm p-5">
         <div className="flex items-center justify-between mb-4">
@@ -195,15 +198,17 @@ const ChartsSection = () => {
         </div>
       </div>
 
-      {/* Pie Chart */}
-      <div className="bg-white rounded-xl shadow-sm p-5">
-        <h3 className="text-md font-semibold text-gray-900 mb-4">
-          Top Categories
-        </h3>
-        <div className="h-64">
-          <Pie data={pieChartData} options={pieChartOptions} />
+      {/* Pie Chart: only show if not admin */}
+      {user?.role !== "admin" && (
+        <div className="bg-white rounded-xl shadow-sm p-5">
+          <h3 className="text-md font-semibold text-gray-900 mb-4">
+            Top Categories
+          </h3>
+          <div className="h-64">
+            <Pie data={pieChartData} options={pieChartOptions} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

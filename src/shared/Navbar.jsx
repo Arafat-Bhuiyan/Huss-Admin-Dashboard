@@ -46,7 +46,7 @@ export const Navbar = () => {
               {user?.name || "User"}
             </h1>
             <h3 className="text-base font-normal text-[#363636]">
-              {user?.role === "superAdmin" ? "Super Admin" : "Store Admin"}
+              {user?.role === "superAdmin" ? "Super Admin" : "Admin"}
             </h3>
           </div>
         </Link>

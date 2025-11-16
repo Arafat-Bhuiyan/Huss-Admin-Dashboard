@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../Redux/features/authSlice";
 
@@ -8,14 +9,14 @@ const demoUsers = [
     email: "superadmin@demo.com",
     password: "SuperAdmin123!",
     role: "superAdmin",
-    name: "Demo Super Admin",
+    name: "Will Parker",
     id: 1,
   },
   {
     email: "admin@demo.com",
     password: "Admin123!",
     role: "admin",
-    name: "Demo Admin",
+    name: "Yusuf Daniels",
     id: 2,
   },
 ];
@@ -25,6 +26,7 @@ export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -88,14 +90,24 @@ export const Login = () => {
           <label className="block text-neutral-500 text-xl font-bold mb-2">
             Password
           </label>
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full h-12 px-4 border border-neutral-500 rounded-[10px] text-gray-700 focus:outline-none focus:border-[#FFBA07]"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full h-12 px-4 border border-neutral-500 rounded-[10px] text-gray-700 focus:outline-none focus:border-[#FFBA07] pr-12"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
+            </button>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
