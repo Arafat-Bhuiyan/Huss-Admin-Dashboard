@@ -4,10 +4,14 @@ import { RouterProvider } from "react-router-dom";
 import "./index.css";
 import router from "./router/Routes.jsx";
 import { Toaster } from "react-hot-toast";
+import { Provider } from "react-redux";
+import { store } from "./Redux/Stores/store.js";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Toaster position="top-right" />
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <Toaster position="top-right" />
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>
 );

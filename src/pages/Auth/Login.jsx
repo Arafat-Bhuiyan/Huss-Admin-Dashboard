@@ -1,26 +1,65 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../../Redux/features/authSlice";
+
+
+const demoUsers = [
+  {
+    email: "superadmin@demo.com",
+    password: "SuperAdmin123!",
+    role: "superAdmin",
+    name: "Demo Super Admin",
+    id: 1,
+  },
+  {
+    email: "admin@demo.com",
+    password: "Admin123!",
+    role: "admin",
+    name: "Demo Admin",
+    id: 2,
+  },
+];
 
 export const Login = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ email, password, remember });
+
+    const found = demoUsers.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (!found) {
+      alert("Invalid login");
+      return;
+    }
+
+    // dispatch to Redux store
+    dispatch(setCredentials({ access: "demo", refresh: "demo", user: found }));
+
+    // optionally handle "remember me" here
+    if (remember) {
+      localStorage.setItem("user", JSON.stringify(found));
+    }
+
+    // reset fields
     setEmail("");
     setPassword("");
+
+    // redirect
     window.location.href = "/";
   };
 
   return (
     <div className=" bg-[#FAF8F2] w-full h-screen flex flex-col justify-center items-center">
-      {/* Card */}
       <form
         onSubmit={handleSubmit}
         className="w-[656px] h-[692px] bg-white border border-[#C1C1C1] shadow-lg rounded-xl p-16  flex flex-col gap-6"
       >
-        {/* Logo */}
         <div className="flex items-center justify-center">
           <span className="text-black text-3xl font-bold font-inter">Shop</span>
           <span className="text-[#FFBA07] text-3xl font-bold font-inter">
@@ -31,7 +70,6 @@ export const Login = () => {
           Secure Dashboard Login
         </h2>
 
-        {/* Email */}
         <div>
           <label className="block text-neutral-500 text-xl font-bold mb-2">
             Email Address
@@ -46,7 +84,6 @@ export const Login = () => {
           />
         </div>
 
-        {/* Password */}
         <div>
           <label className="block text-neutral-500 text-xl font-bold mb-2">
             Password
@@ -61,7 +98,6 @@ export const Login = () => {
           />
         </div>
 
-        {/* Remember Me */}
         <div className="flex items-center gap-3">
           <input
             type="checkbox"
@@ -74,7 +110,6 @@ export const Login = () => {
           </label>
         </div>
 
-        {/* Submit */}
         <button
           type="submit"
           className="w-full h-12 bg-[#FFBA07] text-white text-2xl font-bold rounded-[10px] hover:bg-yellow-600 transition"
