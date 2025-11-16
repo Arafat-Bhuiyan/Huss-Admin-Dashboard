@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import profile from "../assets/images/profile.png";
 import logoutIcon from "../assets/images/logout.svg";
 import logo from "../assets/images/mtech-logo1.png";
@@ -11,25 +13,19 @@ export const Navbar = () => {
   const [isAdminRoleOpen, setIsAdminRoleOpen] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
+  const filteredMenu = useSelector((state) => state.menu.filteredMenu);
+  const dispatch = useDispatch();
+
+  // Update filteredMenu in Redux when user changes
+  useEffect(() => {
+    dispatch({ type: "menu/setFilteredMenu", payload: user });
+  }, [user, dispatch]);
 
   const handleLogout = () => {
     console.log("Logged out");
     navigate("/login");
   };
-
-  const menu = [
-    { name: "Dashboard", path: "/", roles: ["admin", "superAdmin"] },
-    { name: "Users", path: "/users", roles: ["superAdmin"] },
-    { name: "Orders", path: "/orders", roles: ["admin", "superAdmin"] },
-    { name: "Tracking", path: "/tracking", roles: ["admin", "superAdmin"] },
-    { name: "Products", path: "/products", roles: ["superAdmin"] },
-    { name: "Wishlist", path: "/wishlist", roles: ["superAdmin"] },
-    { name: "Promotions", path: "/promotions", roles: ["superAdmin"] },
-    { name: "Settings", path: "/settings", roles: ["admin", "superAdmin"] },
-  ];
-
-  // filter menu items based on user role
-  const filteredMenu = menu.filter((item) => user && item.roles.includes(user.role));
+  // ...existing code...
 
   const linkClasses =
     "text-xl font-semibold font-inter transition-colors duration-200";

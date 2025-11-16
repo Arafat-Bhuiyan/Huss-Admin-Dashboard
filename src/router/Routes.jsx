@@ -11,9 +11,9 @@ import TermsAndPolicies from "../pages/Settings/TermsAndPolicies";
 import AdminProfileSettings from "../pages/Profile/AdminProfileSettings";
 import { Users } from "../pages/User/Users";
 import { Wishlist } from "../pages/Wishlist/Wishlist";
+import RequireRole from "./RequireRole";
 import { Tracking } from "../pages/Tracking/Tracking";
 import WishlistUserListTable from "../pages/Wishlist/WishlistUserListTable";
-
 
 const router = createBrowserRouter([
   {
@@ -22,44 +22,27 @@ const router = createBrowserRouter([
     errorElement: <h2>Route not found</h2>,
     children: [
       {
-        path: "/",
-        element: <Dashboard />,
+        element: <RequireRole allowedRoles={["admin", "superAdmin"]} />,
+        children: [
+          { path: "/", element: <Dashboard /> },
+          { path: "/users", element: <Users /> },
+          { path: "/orders", element: <OrdersPage /> },
+          { path: "/tracking", element: <Tracking /> },
+          { path: "/settings", element: <TermsAndPolicies /> },
+          { path: "/profile", element: <AdminProfileSettings /> },
+        ],
       },
       {
-        path: "/users",
-        element: <Users />,
-      },
-      {
-        path: "/orders",
-        element: <OrdersPage />,
-      },
-      {
-        path: "/products",
-        element: <Products />,
-      },
-      {
-        path: "/wishlist",
-        element: <Wishlist />,
-      },
-      {
-        path: "/wishlistUserListTable/:orderId",
-        element: <WishlistUserListTable />,
-      },
-      {
-        path: "/promotions",
-        element: <Promotions />,
-      },
-      {
-        path: "/tracking",
-        element: <Tracking />,
-      },
-      {
-        path: "/settings",
-        element: <TermsAndPolicies />,
-      },
-      {
-        path: "/profile",
-        element: <AdminProfileSettings />,
+        element: <RequireRole allowedRoles={["superAdmin"]} />,
+        children: [
+          { path: "/products", element: <Products /> },
+          { path: "/wishlist", element: <Wishlist /> },
+          {
+            path: "/wishlistUserListTable/:orderId",
+            element: <WishlistUserListTable />,
+          },
+          { path: "/promotions", element: <Promotions /> },
+        ],
       },
     ],
   },
