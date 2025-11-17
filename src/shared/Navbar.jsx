@@ -8,6 +8,7 @@ import logoutIcon from "../assets/images/logout.svg";
 import logo from "../assets/images/mtech-logo1.png";
 import { ChevronDown } from "lucide-react";
 
+
 export const Navbar = () => {
   const navigate = useNavigate();
   const [isAdminRoleOpen, setIsAdminRoleOpen] = useState(false);
@@ -88,10 +89,10 @@ export const Navbar = () => {
               {isAdminRoleOpen && (
                 <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-md outline outline-1 outline-[#BEBBBB] z-50">
                   <div
-                    onClick={() => setIsAdminRoleOpen(false)}
+                    onClick={() => navigate("/login")}
                     className="px-4 py-2 text-sm text-neutral-700 cursor-pointer hover:bg-gray-100"
                   >
-                    Super Admin
+                    Admin
                   </div>
                 </div>
               )}
