@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../Redux/features/authSlice";
-import logo from "../../assets/images/mtech-logo1.png";
+import logo from "../../assets/images/mtech-logo2.png";
 
 const demoUsers = [
   {

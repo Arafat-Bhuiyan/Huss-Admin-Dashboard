@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import profile from "../assets/images/profile.png";
 import logoutIcon from "../assets/images/logout.svg";
-import logo from "../assets/images/mtech-logo1.png";
+import logo from "../assets/images/mtech-logo2.png";
 import { ChevronDown } from "lucide-react";
 
 
