@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import profile from "../assets/images/profile.png";
 import logoutIcon from "../assets/images/logout.svg";
 import logo from "../assets/images/mtech-logo2.png";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LogOut } from "lucide-react";
 
 
 export const Navbar = () => {
@@ -14,7 +14,7 @@ export const Navbar = () => {
   const [isAdminRoleOpen, setIsAdminRoleOpen] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
-  const filteredMenu = useSelector((state) => state.menu.filteredMenu);
+  const filteredMenu = useSelector((state) => state.menu?.filteredMenu || []);
   const dispatch = useDispatch();
 
   // Update filteredMenu in Redux when user changes
@@ -102,9 +102,9 @@ export const Navbar = () => {
 
         <button
           onClick={handleLogout}
-          className="text-[#DB0000] font-semibold text-lg font-inter flex gap-4 items-center"
+          className="text-[#0088ff] font-semibold text-lg font-inter flex gap-4 items-center"
         >
-          <img src={logoutIcon} alt="Logout Icon" />
+          <LogOut color="#0088ff" size={20} />
           Logout
         </button>
       </div>
