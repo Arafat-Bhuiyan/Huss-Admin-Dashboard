@@ -17,7 +17,7 @@ function useLogin() {
 
       // Expected backend response:
       // {
-      //   user: { id, name, email, role: "superAdmin" },
+      //   user: { id, name, email, role: "Super Admin" },
       //   token: "xxxxx"
       // }
 

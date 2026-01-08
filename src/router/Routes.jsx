@@ -21,31 +21,36 @@ const router = createBrowserRouter([
     element: <Layout />,
     errorElement: <h2>Route not found</h2>,
     children: [
+      /* ================= ADMIN + SUPER ADMIN (COMMON) ================= */
       {
-        element: <RequireRole allowedRoles={["admin", "superAdmin"]} />,
+        element: <RequireRole allowedRoles={["Admin", "Super Admin"]} />,
         children: [
-          { path: "/", element: <Dashboard /> },
-          { path: "/users", element: <Users /> },
-          { path: "/orders", element: <OrdersPage /> },
-          { path: "/tracking", element: <Tracking /> },
-          { path: "/settings", element: <TermsAndPolicies /> },
-          { path: "/profile", element: <AdminProfileSettings /> },
+          { index: true, element: <Dashboard /> },
+          { path: "users", element: <Users /> },
+          { path: "orders", element: <OrdersPage /> },
+          { path: "tracking", element: <Tracking /> },
+          { path: "settings", element: <TermsAndPolicies /> },
+          { path: "profile", element: <AdminProfileSettings /> },
         ],
       },
+
+      /* ================= SUPER ADMIN ONLY ================= */
       {
-        element: <RequireRole allowedRoles={["superAdmin"]} />,
+        element: <RequireRole allowedRoles={["Super Admin"]} />,
         children: [
-          { path: "/products", element: <Products /> },
-          { path: "/wishlist", element: <Wishlist /> },
+          { path: "products", element: <Products /> },
+          { path: "wishlist", element: <Wishlist /> },
           {
-            path: "/wishlistUserListTable/:orderId",
+            path: "wishlistUserListTable/:orderId",
             element: <WishlistUserListTable />,
           },
-          { path: "/promotions", element: <Promotions /> },
+          { path: "promotions", element: <Promotions /> },
         ],
       },
     ],
   },
+
+  /* ================= PUBLIC ================= */
   {
     path: "/login",
     element: <Login />,

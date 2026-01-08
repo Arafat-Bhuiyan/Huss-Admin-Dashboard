@@ -1,14 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialMenu = [
-  { name: "Dashboard", path: "/", roles: ["admin", "superAdmin"] },
-  { name: "Users", path: "/users", roles: ["admin", "superAdmin"] },
-  { name: "Orders", path: "/orders", roles: ["admin", "superAdmin"] },
-  { name: "Tracking", path: "/tracking", roles: ["admin", "superAdmin"] },
-  { name: "Products", path: "/products", roles: ["superAdmin"] },
-  { name: "Wishlist", path: "/wishlist", roles: ["superAdmin"] },
-  { name: "Promotions", path: "/promotions", roles: ["superAdmin"] },
-  { name: "Settings", path: "/settings", roles: ["admin", "superAdmin"] },
+  { name: "Dashboard", path: "/", roles: ["admin", "Super Admin"] },
+  { name: "Users", path: "/users", roles: ["admin", "Super Admin"] },
+  { name: "Orders", path: "/orders", roles: ["admin", "Super Admin"] },
+  { name: "Tracking", path: "/tracking", roles: ["admin", "Super Admin"] },
+  { name: "Products", path: "/products", roles: ["Super Admin"] },
+  { name: "Wishlist", path: "/wishlist", roles: ["Super Admin"] },
+  { name: "Promotions", path: "/promotions", roles: ["Super Admin"] },
+  { name: "Settings", path: "/settings", roles: ["admin", "Super Admin"] },
 ];
 
 const initialState = {

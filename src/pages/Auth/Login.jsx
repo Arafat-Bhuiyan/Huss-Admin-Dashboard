@@ -1,59 +1,40 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { setCredentials } from "../../Redux/features/authSlice";
+import { setUser } from "../../redux/features/authSlice";
+import { useLoginMutation } from "../../redux/api/authApi";
 import logo from "../../assets/images/mtech-logo2.png";
-
-const demoUsers = [
-  {
-    email: "superadmin@demo.com",
-    password: "SuperAdmin123!",
-    role: "superAdmin",
-    name: "Will Parker",
-    id: 1,
-  },
-  {
-    email: "admin@demo.com",
-    password: "Admin123!",
-    role: "admin",
-    name: "Yusuf Daniels",
-    id: 2,
-  },
-];
 
 export const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const found = demoUsers.find(
-      (u) => u.email === email && u.password === password
-    );
+    try {
+      const response = await login({ email, password }).unwrap();
+      console.log("response:", response)
+      // dispatch to Redux store
+      dispatch(setUser({ user: response.data, access: response.access_token,  }));
 
-    if (!found) {
-      alert("Invalid login");
-      return;
+      // reset fields
+      setEmail("");
+      setPassword("");
+      console.log("Login Success");
+      // redirect
+      navigate("/");
+            console.log("Login Success 2");
+    } catch (err) {
+      console.error(err);
+      alert(err?.data?.message || "Invalid login credentials");
     }
-
-    // dispatch to Redux store
-    dispatch(setCredentials({ access: "demo", refresh: "demo", user: found }));
-
-    // optionally handle "remember me" here
-    if (remember) {
-      localStorage.setItem("user", JSON.stringify(found));
-    }
-
-    // reset fields
-    setEmail("");
-    setPassword("");
-
-    // redirect
-    window.location.href = "/";
   };
 
   return (
@@ -121,9 +102,10 @@ export const Login = () => {
 
         <button
           type="submit"
+          disabled={isLoading}
           className="w-full h-12 bg-[#2196F3] text-white text-2xl font-bold rounded-[10px] hover:bg-[#0088ff] transition"
         >
-          Log In
+          {isLoading ? "Logging in..." : "Log In"}
         </button>
       </form>
     </div>

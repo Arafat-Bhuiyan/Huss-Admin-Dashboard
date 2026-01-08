@@ -47,7 +47,7 @@ export const Navbar = () => {
               {user?.name || "User"}
             </h1>
             <h3 className="text-base font-normal text-[#363636]">
-              {user?.role === "superAdmin" ? "Super Admin" : "Admin"}
+              {user?.role === "Super Admin" ? "Super Admin" : "Admin"}
             </h3>
           </div>
         </Link>
@@ -73,7 +73,7 @@ export const Navbar = () => {
           ))}
 
           {/* Admin Role Dropdown (only for superAdmin) */}
-          {user?.role === "superAdmin" && (
+          {user?.role === "Super Admin" && (
             <div className="relative">
               <button
                 onClick={() => setIsAdminRoleOpen((prev) => !prev)}
