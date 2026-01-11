@@ -7,30 +7,47 @@ import {
   Underline,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import {
+  useGetPrivacyPolicyQuery,
+  useGetTermsAndConditionsQuery,
+  useUpdatePrivacyPolicyMutation,
+  useUpdateTermsAndConditionsMutation,
+} from "../../redux/api/authApi";
 
 export default function TermsAndPolicies() {
   const [activeTab, setActiveTab] = useState("terms");
   const [isEditing, setIsEditing] = useState(false);
 
-  const [content, setContent] = useState({
-    terms: `<ul>
-<li>Lorem ipsum dolor sit amet consectetur. Lacus at venenatis gravida vivamus mauris. Quisque mi est vel dis. Donec rhoncus laoreet odio orci sed risus elit accumsan. Mattis ut est tristique amet vitae at aliquet. Ac vel porttitor egestas scelerisque enim quisque senectus. Euismod ultricies vulputate id cras bibendum sollicitudin proin odio bibendum. Velit velit in scelerisque erat etiam rutrum phasellus nunc. Sed lectus sed a at eget. Nunc purus sed quis at risus. Consectetur nibh justo proin placerat condimentum id at adipiscing.</li>
-<li>Vel blandit mi nulla sodales consectetur. Egestas tristique ultrices gravida duis nisl odio. Posuere curabitur eu platea pellentesque ut. Facilisi elementum neque mauris facilisis in. Cursus condimentum ipsum pretium consequat turpis at porttitor nisl.</li>
-<li>Scelerisque tellus praesent condimentum euismod a faucibus. Auctor at ultricies at urna aliquam massa pellentesque. Vitae vulputate nulla diam placerat m.</li>
-</ul>`,
-    privacy: `<ul>
-<li><strong>Privacy policy</strong> content goes here. This section contains important information about how we handle your data and privacy.</li>
-<li>We are committed to protecting your personal information and respecting your privacy.</li>
-<li>All data is handled in accordance with applicable laws and regulations.</li>
-</ul>`,
-  });
+  // Queries
+  const {
+    data: termsData,
+    isLoading: isTermsLoading,
+    isError: isTermsError,
+  } = useGetTermsAndConditionsQuery();
+  const {
+    data: privacyData,
+    isLoading: isPrivacyLoading,
+    isError: isPrivacyError,
+  } = useGetPrivacyPolicyQuery();
 
-  const [editContent, setEditContent] = useState(content[activeTab]);
+  // Mutations
+  const [updateTerms, { isLoading: isUpdatingTerms }] =
+    useUpdateTermsAndConditionsMutation();
+  const [updatePrivacy, { isLoading: isUpdatingPrivacy }] =
+    useUpdatePrivacyPolicyMutation();
+
+  const [editContent, setEditContent] = useState("");
   const editorRef = useRef(null);
 
+  // Sync editContent with activeTab data
   useEffect(() => {
-    setEditContent(content[activeTab]);
-  }, [activeTab, content]);
+    if (activeTab === "terms" && termsData) {
+      setEditContent(termsData.content);
+    } else if (activeTab === "privacy" && privacyData) {
+      setEditContent(privacyData.content);
+    }
+  }, [activeTab, termsData, privacyData]);
 
   useEffect(() => {
     const el = editorRef.current;
@@ -49,22 +66,38 @@ export default function TermsAndPolicies() {
     setIsEditing(false);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     const html = editorRef.current?.innerHTML ?? editContent;
-    setContent((prev) => ({ ...prev, [activeTab]: html }));
-    setIsEditing(false);
+    const cleanHtml = html.replace(/<br>/g, "\n");
+
+    try {
+      if (activeTab === "terms") {
+        await updateTerms({ content: cleanHtml }).unwrap();
+      } else {
+        await updatePrivacy({ content: cleanHtml }).unwrap();
+      }
+      toast.success(
+        `${
+          activeTab === "terms" ? "Terms & Conditions" : "Privacy Policy"
+        } updated successfully`
+      );
+      setIsEditing(false);
+    } catch (error) {
+      toast.error("Failed to update content");
+      console.error("Update error:", error);
+    }
   };
 
   const handleCancelEdit = () => {
-    setEditContent(content[activeTab]);
+    if (activeTab === "terms") {
+      setEditContent(termsData?.content || "");
+    } else {
+      setEditContent(privacyData?.content || "");
+    }
     setIsEditing(false);
   };
 
   const [fontSize, setFontSize] = useState("12");
-
-  const handleEdit = () => {
-    setIsEditing(!isEditing);
-  };
 
   const applyFormat = (command, value) => {
     if (editorRef.current && isEditing) {
@@ -76,7 +109,6 @@ export default function TermsAndPolicies() {
   const handleFontSizeChange = (e) => {
     const newSize = e.target.value;
     setFontSize(newSize);
-    // Apply the new font size to the selected text only
     applyFontSizeToSelection(newSize);
   };
 
@@ -89,6 +121,11 @@ export default function TermsAndPolicies() {
       range.surroundContents(span);
     }
   };
+
+  const isLoading = activeTab === "terms" ? isTermsLoading : isPrivacyLoading;
+  const isError = activeTab === "terms" ? isTermsError : isPrivacyError;
+  const currentContent = activeTab === "terms" ? termsData : privacyData;
+  const isUpdating = isUpdatingTerms || isUpdatingPrivacy;
 
   return (
     <div className="min-h-screen py-6">
@@ -121,7 +158,8 @@ export default function TermsAndPolicies() {
           {!isEditing && (
             <button
               onClick={() => setIsEditing(true)}
-              className="px-4 py-2 bg-[#FFBA07] text-white font-semibold rounded hover:bg-amber-500 transition-colors"
+              className="px-4 py-2 bg-[#FFBA07] text-white font-semibold rounded hover:bg-amber-500 transition-colors disabled:opacity-50"
+              disabled={isLoading || isError}
             >
               Edit
             </button>
@@ -200,7 +238,15 @@ export default function TermsAndPolicies() {
         )}
 
         {/* Content */}
-        {isEditing ? (
+        {isLoading ? (
+          <div className="flex justify-center items-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FFBA07]"></div>
+          </div>
+        ) : isError ? (
+          <div className="flex justify-center items-center min-h-[400px] text-red-500">
+            Failed to load content. Please try again later.
+          </div>
+        ) : isEditing ? (
           <>
             <div
               ref={editorRef}
@@ -209,10 +255,7 @@ export default function TermsAndPolicies() {
               className="min-h-[400px] p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 text-gray-800 leading-relaxed"
               style={{ fontSize: `${fontSize}px` }}
               dangerouslySetInnerHTML={{
-                __html: (editContent ?? content[activeTab] ?? "").replace(
-                  /\n/g,
-                  "<br>"
-                ),
+                __html: (editContent || "").replace(/\n/g, "<br>"),
               }}
               onBlur={(e) =>
                 setEditContent(e.currentTarget.innerHTML.replace(/<br>/g, "\n"))
@@ -221,13 +264,15 @@ export default function TermsAndPolicies() {
             <div className="flex gap-3 mt-4">
               <button
                 onClick={handleSaveEdit}
-                className="px-6 py-2 bg-[#FFBA07] text-white font-semibold rounded hover:bg-amber-500 transition-colors"
+                disabled={isUpdating}
+                className="px-6 py-2 bg-[#FFBA07] text-white font-semibold rounded hover:bg-amber-500 transition-colors disabled:opacity-50"
               >
-                Save
+                {isUpdating ? "Saving..." : "Save"}
               </button>
               <button
                 onClick={handleCancelEdit}
-                className="px-6 py-2 bg-gray-200 text-gray-900 font-semibold rounded hover:bg-gray-300 transition-colors"
+                disabled={isUpdating}
+                className="px-6 py-2 bg-gray-200 text-gray-900 font-semibold rounded hover:bg-gray-300 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -237,7 +282,9 @@ export default function TermsAndPolicies() {
           <div className="prose prose-sm max-w-none">
             <div
               className="text-gray-700 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: content[activeTab] }}
+              dangerouslySetInnerHTML={{
+                __html: currentContent?.content || "",
+              }}
             />
           </div>
         )}

@@ -52,6 +52,46 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Products"],
     }),
+    // === Order List ===
+    getOrderList: builder.query({
+      query: () => ({
+        url: "/orders/list/",
+        method: "GET",
+      }),
+      providesTags: ["Orders"],
+    }),
+    // === Terms and Conditions ===
+    getTermsAndConditions: builder.query({
+      query: () => ({
+        url: "/cores/terms-conditions/",
+        method: "GET",
+      }),
+      providesTags: ["Terms"],
+    }),
+    updateTermsAndConditions: builder.mutation({
+      query: (data) => ({
+        url: "/cores/terms-conditions/update/",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Terms"],
+    }),
+    // === Privacy Policy ===
+    getPrivacyPolicy: builder.query({
+      query: () => ({
+        url: "/cores/privacy-policy/",
+        method: "GET",
+      }),
+      providesTags: ["Privacy"],
+    }),
+    updatePrivacyPolicy: builder.mutation({
+      query: (data) => ({
+        url: "/cores/privacy-policy/update/",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Privacy"],
+    }),
   }),
 });
 
@@ -62,4 +102,9 @@ export const {
   useUpdateProductMutation,
   useGetProductDetailsQuery,
   useDeleteProductMutation,
+  useGetOrderListQuery,
+  useGetTermsAndConditionsQuery,
+  useUpdateTermsAndConditionsMutation,
+  useGetPrivacyPolicyQuery,
+  useUpdatePrivacyPolicyMutation,
 } = authApi;
