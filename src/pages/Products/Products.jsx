@@ -3,10 +3,10 @@ import Orders from "../../assets/images/orders.svg";
 import Unsold from "../../assets/images/unsold.svg";
 import Sold from "../../assets/images/sold.svg";
 import { useState } from "react";
-import products from "../../../public/products.json";
 import { ChevronDown, Search } from "lucide-react";
 import EditProductModal from "./EditProduct";
 import AddProductModal from "./AddProduct";
+import { useGetProductsListQuery } from "../../redux/api/authApi";
 
 // statsData.js
 const statsData = [
@@ -43,6 +43,9 @@ const icons = {
   Sold,
 };
 export default function ProductsPage() {
+  // Fetch products from API
+  const { data: products = [], isLoading, error } = useGetProductsListQuery();
+  console.log("Products:", products);
   const [selectedStatus, setSelectedStatus] = useState("All Categories");
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -56,19 +59,21 @@ export default function ProductsPage() {
   ];
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [productList, setProductList] = useState(products);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  
 
   // ✅ Filter Logic (Search + Category)
-  const filteredProducts = productList.filter((product) => {
+  const filteredProducts = products.filter((product) => {
     const matchesCategory =
       selectedStatus === "All Categories" ||
-      product.category.toLowerCase().includes(selectedStatus.toLowerCase());
+      product.category?.category_name
+        ?.toLowerCase()
+        .includes(selectedStatus.toLowerCase());
 
     const matchesSearch =
       searchTerm === "" ||
-      product.productName
-        .toLowerCase()
+      product.product_name
+        ?.toLowerCase()
         .includes(searchTerm.toLowerCase().trim());
 
     return matchesCategory && matchesSearch;
@@ -80,10 +85,8 @@ export default function ProductsPage() {
   };
 
   const handleSave = (updatedProduct) => {
-    const updatedList = productList.map((p) =>
-      p.id === updatedProduct.id ? updatedProduct : p
-    );
-    setProductList(updatedList);
+    // TODO: Implement API call to update product
+    console.log("Update product:", updatedProduct);
     setIsEditModalOpen(false);
   };
 
@@ -94,27 +97,21 @@ export default function ProductsPage() {
   const handleDelete = (product) => {
     if (
       window.confirm(
-        `Are you sure you want to delete "${product.productName}"?`
+        `Are you sure you want to delete "${product.product_name}"?`
       )
     ) {
-      const updatedList = productList.filter((p) => p.id !== product.id);
-      setProductList(updatedList);
+      // TODO: Implement API call to delete product
+      console.log("Delete product:", product.id);
     }
   };
 
   const handleAddProduct = (newProduct) => {
-    const newProductWithId = {
-      ...newProduct,
-      id: Date.now(), // unique id generate
-      image: newProduct.image
-        ? URL.createObjectURL(newProduct.image)
-        : "/default-product.png", // fallback image if not uploaded
-    };
-
-    setProductList((prevList) => [newProductWithId, ...prevList]);
+    // TODO: Implement API call to add product
+    console.log("Add product:", newProduct);
     setIsAddModalOpen(false);
   };
 
+  console.log("Products 2.0:", products);
   return (
     <div className="py-8 flex flex-col gap-5">
       <div>
@@ -220,94 +217,107 @@ export default function ProductsPage() {
       </div>
       {/* Table */}
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-200 bg-gray-50">
-                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
-                  Image
-                </th>
-                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
-                  Product Name
-                </th>
-                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
-                  Price
-                </th>
-                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
-                  Stock
-                </th>
-                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
-                  Category
-                </th>
-                <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
-                  Actions
-                </th>
-              </tr>
-            </thead>
+        {isLoading ? (
+          <div className="text-center py-12 text-gray-500">
+            <div className="text-lg font-medium">Loading products...</div>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12 text-red-500">
+            <div className="text-lg font-medium">Error loading products</div>
+            <div className="text-sm mt-2">
+              {error?.data?.message || "Please try again later"}
+            </div>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200 bg-gray-50">
+                  <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                    Image
+                  </th>
+                  <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                    Product Name
+                  </th>
+                  <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                    Price
+                  </th>
+                  <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                    Stock
+                  </th>
+                  <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                    Category
+                  </th>
+                  <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
 
-            <tbody>
-              {filteredProducts.length > 0 ? (
-                filteredProducts.map((product) => (
-                  <tr
-                    key={product.id}
-                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-6 py-4 text-center">
-                      <img
-                        src={product.image}
-                        alt={product.productName}
-                        className="w-16 h-16 object-cover rounded-md mx-auto"
-                      />
-                    </td>
-                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
-                      {product.productName}
-                    </td>
-                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
-                      ${product.price.toLocaleString()}
-                    </td>
-                    <td
-                      className={`px-6 py-4 text-center text-base font-medium ${
-                        product.stock === "In Stock"
-                          ? "text-green-500"
-                          : "text-orange-600"
-                      }`}
+              <tbody>
+                {filteredProducts.length > 0 ? (
+                  filteredProducts.map((product) => (
+                    <tr
+                      key={product.id}
+                      className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
                     >
-                      {product.stock}{" "}
-                    </td>
-                    <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
-                      {product.category}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <div className="flex items-center justify-center gap-2 h-full">
-                        <button
-                          onClick={() => handleEdit(product)}
-                          className="px-4 py-1 bg-[#FFBA07] text-white rounded-md text-sm font-medium hover:bg-yellow-500 transition"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(product)}
-                          className="px-4 py-1 bg-[#DB0000] text-white rounded-md text-sm font-medium hover:bg-red-600 transition"
-                        >
-                          Delete
-                        </button>
-                      </div>
+                      <td className="px-6 py-4 text-center">
+                        <img
+                          src={`http://10.10.13.20:8001${product.image}`}
+                          alt={product.product_name}
+                          className="w-16 h-16 object-cover rounded-md mx-auto"
+                        />
+                      </td>
+                      <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
+                        {product.product_name}
+                      </td>
+                      <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
+                        ${parseFloat(product.price).toLocaleString()}
+                      </td>
+                      <td
+                        className={`px-6 py-4 text-center text-base font-medium ${
+                          product.stock_status === "in_stock"
+                            ? "text-green-500"
+                            : "text-orange-600"
+                        }`}
+                      >
+                        {product.stock_quantity}
+                      </td>
+                      <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
+                        {product.category?.category_name || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex items-center justify-center gap-2 h-full">
+                          <button
+                            onClick={() => handleEdit(product)}
+                            className="px-4 py-1 bg-[#FFBA07] text-white rounded-md text-sm font-medium hover:bg-yellow-500 transition"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(product)}
+                            className="px-4 py-1 bg-[#DB0000] text-white rounded-md text-sm font-medium hover:bg-red-600 transition"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="6"
+                      className="text-center py-6 text-gray-500 text-sm"
+                    >
+                      No products found.
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="6"
-                    className="text-center py-6 text-gray-500 text-sm"
-                  >
-                    No products found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Edit Modal */}

@@ -1,44 +1,78 @@
 import { useState } from "react";
+import { useUpdateProductMutation } from "../../redux/api/authApi";
 
 const EditProductModal = ({ product, onClose, onSave }) => {
-  const [productName, setProductName] = useState(product?.productName || "");
-  const [category, setCategory] = useState(product?.category || "All Categories");
+  const [productName, setProductName] = useState(product?.product_name || "");
+  const [category, setCategory] = useState(String(product?.category) || "5");
   const [description, setDescription] = useState(product?.description || "");
   const [price, setPrice] = useState(product?.price || "");
-  const [discount, setDiscount] = useState(product?.discount || "Flat 20% off");
-  const [stockQty, setStockQty] = useState(product?.stock || "");
-  const [stockStatus, setStockStatus] = useState(product?.stockStatus || "In Stock");
+  const [discount, setDiscount] = useState(product?.discount_percent || 0);
+  const [stockQty, setStockQty] = useState(product?.stock_quantity || "");
+  const [stockStatus, setStockStatus] = useState(
+    product?.stock_status === "in_stock" ? "In Stock" : "Out of Stock"
+  );
   const [image, setImage] = useState(null);
 
+  // API mutation hook
+  const [updateProduct, { isLoading }] = useUpdateProductMutation();
+
+  // Categories with correct Backend IDs (Matches AddProduct.jsx)
   const categories = [
-    "All Categories",
-    "Survey Equipment",
-    "Testing & Lab Equipment",
-    "Electronics Equipment",
-    "Gaming Equipment",
-    "Accessories Equipment",
+    { id: "5", name: "Survey Equipment" },
+    { id: "7", name: "Gaming Equipment" },
+    { id: "8", name: "Testing & Lab Equipment" },
+    { id: "9", name: "Electronics Equipment" },
+    { id: "10", name: "Accessories Equipment" },
+    { id: "11", name: "Industrial Tools" },
   ];
 
-  const discountTypes = ["Flat 20% off", "Percentage off", "Buy One Get One Free"];
+  const discountTypes = [
+    "Flat 20% off",
+    "Percentage off",
+    "Buy One Get One Free",
+  ];
   const stockStatuses = ["In Stock", "Out of Stock"];
 
   const handleFileChange = (e) => {
     setImage(e.target.files[0]);
   };
 
-  const handleSave = () => {
-    const updatedProduct = {
-      ...product,
-      productName,
-      category,
-      description,
-      price,
-      discount,
-      stock: stockStatus,
-      stockStatus,
-      image,
-    };
-    onSave(updatedProduct);
+  const handleSave = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("product_name", productName);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("stock_quantity", stockQty);
+      formData.append("category", category);
+
+      // Only append image if a new one is selected
+      if (image) {
+        formData.append("image", image);
+      }
+
+      // Console log for debugging
+      console.log("=== Update FormData Contents ===");
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      // Call the mutation with ID and data
+      const response = await updateProduct({
+        id: product.id,
+        data: formData,
+      }).unwrap();
+
+      console.log("Product updated successfully:", response);
+
+      if (onSave) {
+        onSave(response);
+      }
+      onClose();
+    } catch (err) {
+      console.error("Failed to update product:", err);
+      alert("Failed to update product. Please try again.");
+    }
   };
 
   return (
@@ -79,8 +113,8 @@ const EditProductModal = ({ product, onClose, onSave }) => {
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             >
               {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
                 </option>
               ))}
             </select>
@@ -116,19 +150,14 @@ const EditProductModal = ({ product, onClose, onSave }) => {
           {/* Discount */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Discount Price
+              Discount Percent
             </label>
-            <select
+            <input
+              type="number"
               value={discount}
               onChange={(e) => setDiscount(e.target.value)}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            >
-              {discountTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           {/* Stock Quantity */}
@@ -173,7 +202,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             />
             <p className="text-xs text-gray-400 mt-1">
-              Upload a high-quality image for the product.
+              Upload a new image to replace the current one.
             </p>
           </div>
         </div>
@@ -182,15 +211,18 @@ const EditProductModal = ({ product, onClose, onSave }) => {
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={handleSave}
-            className="bg-yellow-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-yellow-600 transition"
+            disabled={isLoading}
+            className={`bg-yellow-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-yellow-600 transition ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            Save Product
+            {isLoading ? "Saving..." : "Save Product"}
           </button>
           <button
             onClick={onClose}
             className="bg-gray-100 text-gray-700 px-6 py-2 rounded-md font-semibold hover:bg-gray-200 transition"
           >
-            Save as draft
+            Cancel
           </button>
         </div>
       </div>

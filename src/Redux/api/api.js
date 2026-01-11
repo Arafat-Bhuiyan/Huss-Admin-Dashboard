@@ -1,7 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://10.10.13.20:8004/api/v1",
+  // baseUrl: "https://f152964437e2.ngrok-free.app/api/v1",
+  baseUrl: baseUrl,
   prepareHeaders: (headers, { getState }) => {
     // Try to get token from Redux state
     const token = getState().auth?.access || localStorage.getItem("access");

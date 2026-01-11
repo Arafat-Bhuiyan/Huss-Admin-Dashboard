@@ -1,44 +1,90 @@
 import { useState } from "react";
+import { useAddProductMutation } from "../../redux/api/authApi";
 
 const AddProductModal = ({ product, onClose, onSave }) => {
   const [productName, setProductName] = useState(product?.productName || "");
-  const [category, setCategory] = useState(product?.category || "All Categories");
+  const [category, setCategory] = useState(product?.category || "5");
   const [description, setDescription] = useState(product?.description || "");
   const [price, setPrice] = useState(product?.price || "");
   const [discount, setDiscount] = useState(product?.discount || "Flat 20% off");
   const [stockQty, setStockQty] = useState(product?.stock || "");
-  const [stockStatus, setStockStatus] = useState(product?.stockStatus || "In Stock");
+  const [stockStatus, setStockStatus] = useState(
+    product?.stockStatus || "In Stock"
+  );
   const [image, setImage] = useState(null);
 
+  // API mutation hook
+  const [addProduct, { isLoading, isSuccess, isError, error }] =
+    useAddProductMutation();
+
+  // Categories with correct Backend IDs
   const categories = [
-    "All Categories",
-    "Survey Equipment",
-    "Testing & Lab Equipment",
-    "Electronics Equipment",
-    "Gaming Equipment",
-    "Accessories Equipment",
+    { id: "5", name: "Survey Equipment" },
+    { id: "7", name: "Gaming Equipment" },
+    { id: "8", name: "Testing & Lab Equipment" },
+    { id: "9", name: "Electronics Equipment" },
+    { id: "10", name: "Accessories Equipment" },
+    { id: "11", name: "Industrial Tools" },
   ];
 
-  const discountTypes = ["Flat 20% off", "Percentage off", "Buy One Get One Free"];
+  const discountTypes = [
+    "Flat 20% off",
+    "Percentage off",
+    "Buy One Get One Free",
+  ];
   const stockStatuses = ["In Stock", "Out of Stock"];
 
   const handleFileChange = (e) => {
     setImage(e.target.files[0]);
   };
 
-  const handleSave = () => {
-    const updatedProduct = {
-      ...product,
-      productName,
-      category,
-      description,
-      price,
-      discount,
-      stock: stockStatus,
-      stockStatus,
-      image,
-    };
-    onSave(updatedProduct);
+  const handleSave = async () => {
+    try {
+      // Create FormData object to send file and other data
+      const formData = new FormData();
+
+      formData.append("product_name", productName);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("stock_quantity", stockQty);
+
+      // Append image file if selected
+      if (image) {
+        formData.append("image", image);
+      }
+
+      // Append category (you may need to map category name to category ID)
+      // For now, sending category as text - adjust based on your backend requirements
+      formData.append("category", category);
+
+      // Console log FormData contents
+      console.log("=== FormData Contents ===");
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      // Check category type
+      console.log("Category ID:", category);
+      console.log("Category type:", typeof category);
+
+      // Call the mutation
+      const response = await addProduct(formData).unwrap();
+
+      // Success handling
+      console.log("Product added successfully:", response);
+
+      // Call onSave callback if provided
+      if (onSave) {
+        onSave(response);
+      }
+
+      // Close modal
+      onClose();
+    } catch (err) {
+      // Error handling
+      console.error("Failed to add product:", err);
+      alert("Failed to add product. Please try again.");
+    }
   };
 
   return (
@@ -79,8 +125,8 @@ const AddProductModal = ({ product, onClose, onSave }) => {
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             >
               {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
                 </option>
               ))}
             </select>
@@ -182,9 +228,12 @@ const AddProductModal = ({ product, onClose, onSave }) => {
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={handleSave}
-            className="bg-yellow-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-yellow-600 transition"
+            disabled={isLoading}
+            className={`bg-yellow-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-yellow-600 transition ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            Save Product
+            {isLoading ? "Saving..." : "Save Product"}
           </button>
           <button
             onClick={onClose}
