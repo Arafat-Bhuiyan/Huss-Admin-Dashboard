@@ -16,6 +16,7 @@ export const authApi = api.injectEndpoints({
         url: "/products/list/",
         method: "GET",
       }),
+      providesTags: ["Products"],
     }),
     // === Add Product ===
     addProduct: builder.mutation({
@@ -24,6 +25,7 @@ export const authApi = api.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Products"],
     }),
     // === Update Product ===
     updateProduct: builder.mutation({
@@ -32,6 +34,23 @@ export const authApi = api.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
+      invalidatesTags: ["Products"],
+    }),
+    // === Product Details ===
+    getProductDetails: builder.query({
+      query: (id) => ({
+        url: `/products/${id}/detail/`,
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "Products", id }],
+    }),
+    // === Delete Product ===
+    deleteProduct: builder.mutation({
+      query: (id) => ({
+        url: `/product/${id}/delete/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Products"],
     }),
   }),
 });
@@ -41,4 +60,6 @@ export const {
   useGetProductsListQuery,
   useAddProductMutation,
   useUpdateProductMutation,
+  useGetProductDetailsQuery,
+  useDeleteProductMutation,
 } = authApi;

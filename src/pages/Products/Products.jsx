@@ -6,7 +6,11 @@ import { useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
 import EditProductModal from "./EditProduct";
 import AddProductModal from "./AddProduct";
-import { useGetProductsListQuery } from "../../redux/api/authApi";
+import {
+  useGetProductsListQuery,
+  useDeleteProductMutation,
+} from "../../redux/api/authApi";
+import { toast } from "react-hot-toast";
 
 // statsData.js
 const statsData = [
@@ -46,6 +50,9 @@ export default function ProductsPage() {
   // Fetch products from API
   const { data: products = [], isLoading, error } = useGetProductsListQuery();
   console.log("Products:", products);
+
+  // Mutation for deleting product
+  const [deleteProduct] = useDeleteProductMutation();
   const [selectedStatus, setSelectedStatus] = useState("All Categories");
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -60,7 +67,6 @@ export default function ProductsPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  
 
   // ✅ Filter Logic (Search + Category)
   const filteredProducts = products.filter((product) => {
@@ -95,14 +101,54 @@ export default function ProductsPage() {
   };
 
   const handleDelete = (product) => {
-    if (
-      window.confirm(
-        `Are you sure you want to delete "${product.product_name}"?`
-      )
-    ) {
-      // TODO: Implement API call to delete product
-      console.log("Delete product:", product.id);
-    }
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-3">
+          <p className="text-sm font-medium text-gray-900">
+            Are you sure you want to delete <b>"{product.product_name}"</b>?
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 rounded hover:bg-gray-200 transition"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={async () => {
+                toast.dismiss(t.id);
+                const deletePromise = deleteProduct(product.id).unwrap();
+
+                toast.promise(deletePromise, {
+                  loading: "Deleting product...",
+                  success: "Product deleted successfully!",
+                  error: (err) =>
+                    `Error: ${err?.data?.message || "Failed to delete"}`,
+                });
+
+                try {
+                  await deletePromise;
+                  console.log("Deleted product successfully:", product.id);
+                } catch (err) {
+                  console.error("Failed to delete product:", err);
+                }
+              }}
+              className="px-3 py-1.5 text-xs font-semibold text-white bg-red-600 rounded hover:bg-red-700 transition"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        duration: 6000,
+        position: "top-center",
+        style: {
+          minWidth: "300px",
+          padding: "16px",
+        },
+      }
+    );
   };
 
   const handleAddProduct = (newProduct) => {

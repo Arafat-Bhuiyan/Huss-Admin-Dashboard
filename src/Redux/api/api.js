@@ -3,7 +3,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const baseQuery = fetchBaseQuery({
-  // baseUrl: "https://f152964437e2.ngrok-free.app/api/v1",
   baseUrl: baseUrl,
   prepareHeaders: (headers, { getState }) => {
     // Try to get token from Redux state
@@ -19,6 +18,6 @@ const baseQuery = fetchBaseQuery({
 export const api = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQuery,
-  tagTypes: ["users", "auth", "contents", "aboutUs", "coreValues"],
+  tagTypes: ["Products"],
   endpoints: () => ({}),
 });
