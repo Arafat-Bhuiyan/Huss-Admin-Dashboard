@@ -84,6 +84,7 @@ export const authApi = api.injectEndpoints({
       }),
       providesTags: ["Privacy"],
     }),
+    // === Update Privacy Policy ===
     updatePrivacyPolicy: builder.mutation({
       query: (data) => ({
         url: "/cores/privacy-policy/update/",
@@ -91,6 +92,23 @@ export const authApi = api.injectEndpoints({
         body: data,
       }),
       invalidatesTags: ["Privacy"],
+    }),
+    // === Category List ===
+    getCategoryList: builder.query({
+      query: () => ({
+        url: "/categories/list/",
+        method: "GET",
+      }),
+      providesTags: ["Category"],
+    }),
+    // === Create Category ===
+    createCategory: builder.mutation({
+      query: (data) => ({
+        url: "/categories/create/",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Category"],
     }),
   }),
 });
@@ -107,4 +125,6 @@ export const {
   useUpdateTermsAndConditionsMutation,
   useGetPrivacyPolicyQuery,
   useUpdatePrivacyPolicyMutation,
+  useGetCategoryListQuery,
+  useCreateCategoryMutation,
 } = authApi;
