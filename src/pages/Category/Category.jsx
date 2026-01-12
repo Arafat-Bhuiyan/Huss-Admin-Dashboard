@@ -1,7 +1,12 @@
 import { Folder, SquarePen, Trash2 } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
+import AddCategoryModal from "./AddCategoryModal";
+import EditCategoryModal from "./EditCategoryModal";
 
 export const Category = () => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const categories = [
     {
       title: "Electronics Equipment",
@@ -41,6 +46,27 @@ export const Category = () => {
     },
   ];
 
+  const handleAddCategory = (newCategory) => {
+    // TODO: Implement API call to add category
+    console.log("Add category:", newCategory);
+    setIsAddModalOpen(false);
+  };
+
+  const handleEdit = (product) => {
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSave = (updatedProduct) => {
+    // TODO: Implement API call to update product
+    console.log("Update product:", updatedProduct);
+    setIsEditModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setIsEditModalOpen(false);
+  };
+
   return (
     <div className="py-8 flex flex-col gap-5 min-h-screen">
       <div className="flex justify-between items-center">
@@ -52,8 +78,13 @@ export const Category = () => {
             Organize your products into categories
           </div>
         </div>
-        <button className="bg-[#FFBA07] text-white font-normal text-base px-6 py-2.5 rounded-[10px]">
-          + Add Category
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="w-56 h-12 p-2.5 bg-[#FFBA07] rounded-[10px] inline-flex justify-center items-center gap-2.5 hover:bg-yellow-500 transition"
+        >
+          <span className="text-white text-xl font-semibold leading-snug">
+            + Add Category
+          </span>
         </button>
       </div>
 
@@ -69,7 +100,10 @@ export const Category = () => {
                 <Folder color="#FFBA07" className="w-6 h-6" />
               </div>
               <div className="flex gap-2">
-                <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <button
+                  onClick={() => handleEdit(item)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
                   <SquarePen size={16} color="#FFBA07" />
                 </button>
                 <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
@@ -103,6 +137,20 @@ export const Category = () => {
           </div>
         ))}
       </div>
+      {isAddModalOpen && (
+        <AddCategoryModal
+          onClose={() => setIsAddModalOpen(false)}
+          onSave={handleAddCategory}
+        />
+      )}
+      {/* Edit Modal */}
+      {isEditModalOpen && (
+        <EditCategoryModal
+          category={selectedProduct}
+          onClose={handleCloseModal}
+          onSave={handleSave}
+        />
+      )}
     </div>
   );
 };
