@@ -1,133 +1,156 @@
 import { useState } from "react";
-import { useAddProductMutation } from "../../redux/api/authApi";
+import toast from "react-hot-toast";
+import { useCreateCategoryMutation } from "../../redux/api/authApi";
 
-const AddCategoryModal = ({ category, onClose, onSave }) => {
-  const [categoryName, setCategoryName] = useState(
-    category?.categoryName || ""
-  );
-  const [description, setDescription] = useState(category?.description || "");
+const AddCategoryModal = ({ onClose, onSave }) => {
+  const [categoryName, setCategoryName] = useState("");
+  const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
 
   // API mutation hook
-  const [addProduct, { isLoading, isSuccess, isError, error }] =
-    useAddProductMutation();
+  const [createCategory, { isLoading }] = useCreateCategoryMutation();
 
   const handleFileChange = (e) => {
     setImage(e.target.files[0]);
   };
 
   const handleSave = async () => {
+    if (!categoryName.trim()) {
+      toast.error("Category name is required");
+      return;
+    }
+
     try {
-      // Create FormData object to send file and other data
       const formData = new FormData();
-
-      formData.append("product_name", categoryName);
-      formData.append("description", description);
-
-      // Append image file if selected
+      formData.append("category_name", categoryName);
+      if (description) {
+        formData.append("description", description);
+      }
       if (image) {
         formData.append("image", image);
       }
 
-      // Console log FormData contents
-      console.log("=== FormData Contents ===");
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
+      const response = await createCategory(formData).unwrap();
 
-      // Call the mutation
-      const response = await addProduct(formData).unwrap();
+      toast.success("Category added successfully");
 
-      // Success handling
-      console.log("Category added successfully:", response);
-
-      // Call onSave callback if provided
       if (onSave) {
         onSave(response);
       }
-
-      // Close modal
       onClose();
     } catch (err) {
-      // Error handling
       console.error("Failed to add category:", err);
-      alert("Failed to add category. Please try again.");
+      toast.error(err?.data?.message || "Failed to add category");
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white w-[700px] rounded-xl p-6 relative">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">
+      <div className="bg-white w-full max-w-[600px] rounded-xl p-6 relative shadow-2xl animate-in fade-in zoom-in duration-200">
         {/* Modal Header */}
-        <h2 className="text-lg font-semibold text-gray-900 mb-1 text-center">
+        <h2 className="text-xl font-bold text-gray-900 mb-1 text-center font-inter">
           Add New Category
         </h2>
-        <p className="text-sm text-gray-500 text-center mb-6">
+        <p className="text-sm text-gray-500 text-center mb-8 font-inter">
           Enter the details of the new category you want to add to your store.
         </p>
 
         {/* Form */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-5">
           {/* Category Name */}
-          <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div>
+            <label className="block text-sm font-semibold text-[#344054] mb-1.5 font-inter">
               Category Name
             </label>
             <input
               type="text"
               value={categoryName}
               onChange={(e) => setCategoryName(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-              placeholder="Enter category name"
+              className="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 focus:outline-none focus:ring-4 focus:ring-yellow-500/10 focus:border-yellow-500 transition-all font-inter"
+              placeholder="e.g. Electronics Equipment"
             />
           </div>
 
           {/* Description */}
-          <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div>
+            <label className="block text-sm font-semibold text-[#344054] mb-1.5 font-inter">
               Description
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-              placeholder="Enter category description"
+              rows={4}
+              className="w-full border border-gray-300 rounded-lg px-3.5 py-2.5 focus:outline-none focus:ring-4 focus:ring-yellow-500/10 focus:border-yellow-500 transition-all font-inter resize-none"
+              placeholder="Describe the items in this category..."
             ></textarea>
           </div>
 
           {/* Category Image */}
-          <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div>
+            <label className="block text-sm font-semibold text-[#344054] mb-1.5 font-inter">
               Category Image
             </label>
-            <input
-              type="file"
-              onChange={handleFileChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            />
-            <p className="text-xs text-gray-400 mt-1">
-              Upload a high-quality image for the category.
-            </p>
+            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-yellow-500 transition-colors">
+              <div className="space-y-1 text-center">
+                <svg
+                  className="mx-auto h-12 w-12 text-gray-400"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 48 48"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <div className="flex text-sm text-gray-600">
+                  <label className="relative cursor-pointer bg-white rounded-md font-medium text-yellow-600 hover:text-yellow-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-yellow-500">
+                    <span>Upload a file</span>
+                    <input
+                      type="file"
+                      className="sr-only"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                  <p className="pl-1 text-[#475467]">or drag and drop</p>
+                </div>
+                <p className="text-xs text-[#475467]">
+                  PNG, JPG, GIF up to 10MB
+                </p>
+                {image && (
+                  <p className="mt-2 text-sm text-green-600 font-medium">
+                    Selected: {image.name}
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-end gap-3 mt-6">
+        <div className="flex justify-end gap-3 mt-8">
+          <button
+            onClick={onClose}
+            className="flex-1 px-4 py-2.5 bg-white border border-gray-300 text-[#344054] font-semibold rounded-lg hover:bg-gray-50 transition-all font-inter"
+          >
+            Cancel
+          </button>
           <button
             onClick={handleSave}
             disabled={isLoading}
-            className={`bg-yellow-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-yellow-600 transition ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className="flex-1 px-4 py-2.5 bg-[#FFBA07] text-white font-semibold rounded-lg hover:bg-yellow-600 transition-all font-inter disabled:opacity-70 disabled:cursor-not-allowed shadow-sm"
           >
-            {isLoading ? "Saving..." : "Save Category"}
-          </button>
-          <button
-            onClick={onClose}
-            className="bg-gray-100 text-gray-700 px-6 py-2 rounded-md font-semibold hover:bg-gray-200 transition"
-          >
-            Cancel
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Saving...
+              </div>
+            ) : (
+              "Save Category"
+            )}
           </button>
         </div>
       </div>
