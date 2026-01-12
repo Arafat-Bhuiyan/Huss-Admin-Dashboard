@@ -1,7 +1,10 @@
 import { Folder, SquarePen, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { useGetCategoryListQuery } from "../../redux/api/authApi";
+import {
+  useDeleteCategoryMutation,
+  useGetCategoryListQuery,
+} from "../../redux/api/authApi";
 import AddCategoryModal from "./AddCategoryModal";
 import EditCategoryModal from "./EditCategoryModal";
 
@@ -10,8 +13,9 @@ export const Category = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  // API query hook
+  // API query/mutation hooks
   const { data: categoryData, isLoading, isError } = useGetCategoryListQuery();
+  const [deleteCategory] = useDeleteCategoryMutation();
 
   const handleAddCategory = (newCategory) => {
     // TODO: Implement API call to add category
@@ -49,10 +53,18 @@ export const Category = () => {
               Cancel
             </button>
             <button
-              onClick={() => {
-                // TODO: Implement API call to delete category
-                toast.dismiss(t.id);
-                toast.success("Category deleted successfully");
+              onClick={async () => {
+                try {
+                  toast.dismiss(t.id);
+                  const loadingToast = toast.loading("Deleting category...");
+                  await deleteCategory(id).unwrap();
+                  toast.dismiss(loadingToast);
+                  toast.success("Category deleted successfully");
+                } catch (err) {
+                  toast.error(
+                    err?.data?.message || "Failed to delete category"
+                  );
+                }
               }}
               className="px-3 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 transition"
             >

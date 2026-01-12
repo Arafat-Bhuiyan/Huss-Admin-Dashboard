@@ -119,6 +119,14 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Category"],
     }),
+    // === Delete Category ===
+    deleteCategory: builder.mutation({
+      query: (id) => ({
+        url: `/categories/${id}/delete/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Category"],
+    }),
   }),
 });
 
@@ -137,4 +145,5 @@ export const {
   useGetCategoryListQuery,
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
 } = authApi;
