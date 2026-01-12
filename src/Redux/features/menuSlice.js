@@ -6,6 +6,7 @@ const initialMenu = [
   { name: "Orders", path: "/orders", roles: ["admin", "Super Admin"] },
   { name: "Tracking", path: "/tracking", roles: ["admin", "Super Admin"] },
   { name: "Products", path: "/products", roles: ["Super Admin"] },
+  { name: "Categories", path: "/category", roles: ["Super Admin"] },
   { name: "Wishlist", path: "/wishlist", roles: ["Super Admin"] },
   { name: "Promotions", path: "/promotions", roles: ["Super Admin"] },
   { name: "Settings", path: "/settings", roles: ["admin", "Super Admin"] },

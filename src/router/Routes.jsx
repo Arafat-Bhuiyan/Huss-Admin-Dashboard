@@ -14,6 +14,7 @@ import { Wishlist } from "../pages/Wishlist/Wishlist";
 import RequireRole from "./RequireRole";
 import { Tracking } from "../pages/Tracking/Tracking";
 import WishlistUserListTable from "../pages/Wishlist/WishlistUserListTable";
+import { Category } from "../pages/Category/Category";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       {
         element: <RequireRole allowedRoles={["Super Admin"]} />,
         children: [
+          { path: "category", element: <Category /> },
           { path: "products", element: <Products /> },
           { path: "wishlist", element: <Wishlist /> },
           {
