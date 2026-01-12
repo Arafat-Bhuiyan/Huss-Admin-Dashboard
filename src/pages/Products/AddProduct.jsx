@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { useAddProductMutation } from "../../redux/api/authApi";
+import {
+  useAddProductMutation,
+  useGetCategoryListQuery,
+} from "../../redux/api/authApi";
 
 const AddProductModal = ({ product, onClose, onSave }) => {
+  const { data: categoryData } = useGetCategoryListQuery();
   const [productName, setProductName] = useState(product?.productName || "");
-  const [category, setCategory] = useState(product?.category || "5");
+  const [category, setCategory] = useState(product?.category || "");
   const [description, setDescription] = useState(product?.description || "");
   const [price, setPrice] = useState(product?.price || "");
   const [discount, setDiscount] = useState(product?.discount || "Flat 20% off");
@@ -14,18 +18,9 @@ const AddProductModal = ({ product, onClose, onSave }) => {
   const [image, setImage] = useState(null);
 
   // API mutation hook
-  const [addProduct, { isLoading, isSuccess, isError, error }] =
-    useAddProductMutation();
+  const [addProduct, { isLoading }] = useAddProductMutation();
 
-  // Categories with correct Backend IDs
-  const categories = [
-    { id: "5", name: "Survey Equipment" },
-    { id: "7", name: "Gaming Equipment" },
-    { id: "8", name: "Testing & Lab Equipment" },
-    { id: "9", name: "Electronics Equipment" },
-    { id: "10", name: "Accessories Equipment" },
-    { id: "11", name: "Industrial Tools" },
-  ];
+  // Categories were previously static, now using categoryData from API
 
   const discountTypes = [
     "Flat 20% off",
@@ -124,9 +119,10 @@ const AddProductModal = ({ product, onClose, onSave }) => {
               onChange={(e) => setCategory(e.target.value)}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             >
-              {categories.map((cat) => (
+              <option value="">Select Category</option>
+              {categoryData?.map((cat) => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.name}
+                  {cat.category_name}
                 </option>
               ))}
             </select>

@@ -9,6 +9,7 @@ import AddProductModal from "./AddProduct";
 import {
   useGetProductsListQuery,
   useDeleteProductMutation,
+  useGetCategoryListQuery,
 } from "../../redux/api/authApi";
 import { toast } from "react-hot-toast";
 
@@ -47,8 +48,9 @@ const icons = {
   Sold,
 };
 export default function ProductsPage() {
-  // Fetch products from API
+  // Fetch products and categories from API
   const { data: products = [], isLoading, error } = useGetProductsListQuery();
+  const { data: categoryData = [] } = useGetCategoryListQuery();
   console.log("Products:", products);
 
   // Mutation for deleting product
@@ -56,13 +58,10 @@ export default function ProductsPage() {
   const [selectedStatus, setSelectedStatus] = useState("All Categories");
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
   const statuses = [
     "All Categories",
-    "Survey Equipment",
-    "Testing & Lab Equipment",
-    "Electronics Equipment",
-    "Gaming Equipment",
-    "Accessories Equipment",
+    ...categoryData.map((cat) => cat.category_name),
   ];
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -72,9 +71,7 @@ export default function ProductsPage() {
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
       selectedStatus === "All Categories" ||
-      product.category?.category_name
-        ?.toLowerCase()
-        .includes(selectedStatus.toLowerCase());
+      product.category?.category_name === selectedStatus;
 
     const matchesSearch =
       searchTerm === "" ||
