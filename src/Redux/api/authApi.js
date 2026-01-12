@@ -110,6 +110,15 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Category"],
     }),
+    // === Update Category ===
+    updateCategory: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/categories/${id}/update/`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Category"],
+    }),
   }),
 });
 
@@ -127,4 +136,5 @@ export const {
   useUpdatePrivacyPolicyMutation,
   useGetCategoryListQuery,
   useCreateCategoryMutation,
+  useUpdateCategoryMutation,
 } = authApi;
