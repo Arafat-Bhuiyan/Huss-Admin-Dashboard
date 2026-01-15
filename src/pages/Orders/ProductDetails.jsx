@@ -3,9 +3,21 @@
 import { ArrowLeft } from "lucide-react";
 import productImage from "../../assets/images/product_image.png";
 
-export default function ProductDetailsModal({ product, onClose }) {
+export default function ProductDetailsModal({ product: order, onClose }) {
+  const item = order?.items?.[0] || {};
+
+  const getFullImageUrl = (imagePath) => {
+    if (!imagePath) return productImage;
+    if (imagePath.startsWith("http")) return imagePath;
+
+    // Get base URL from env and remove /api/v1
+    const baseUrl = import.meta.env.VITE_BASE_URL || "";
+    const origin = baseUrl.split("/api/v1")[0];
+    return `${origin}${imagePath}`;
+  };
+
   const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case "shipped":
         return "bg-[#8B5CF6] text-white";
       case "pending":
@@ -41,8 +53,8 @@ export default function ProductDetailsModal({ product, onClose }) {
             <div className="w-1/2 flex items-center justify-center">
               <div className="w-full aspect-square bg-gray-100 rounded-[20px] overflow-hidden">
                 <img
-                  src={product.image || productImage}
-                  alt={product.product}
+                  src={getFullImageUrl(item.product_image)}
+                  alt={item.product_name}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -52,19 +64,10 @@ export default function ProductDetailsModal({ product, onClose }) {
             <div className="space-y-6 w-1/2">
               <div>
                 <h3 className="text-neutral-700 text-2xl font-semibold mb-2">
-                  {product.product}
+                  {item.product_name || "N/A"}
                 </h3>
                 <p className="text-neutral-700 text-base font-normal">
-                  Category: {product.category}
-                </p>
-              </div>
-
-              <div>
-                <h4 className="text-neutral-700 text-xl font-medium mb-2">
-                  Description:
-                </h4>
-                <p className="text-neutral-700 text-xs font-normal leading-relaxed">
-                  {product.description}
+                  Category: {item.category_name || "N/A"}
                 </p>
               </div>
 
@@ -74,15 +77,15 @@ export default function ProductDetailsModal({ product, onClose }) {
                     Price
                   </p>
                   <p className="text-[#FFBA07] text-xl font-medium">
-                    {product.amount}
+                    ${item.price || order.total_amount}
                   </p>
                 </div>
                 <div>
                   <p className="text-neutral-700 text-base font-normal mb-1">
-                    Stock
+                    Quantity
                   </p>
                   <p className="text-neutral-700 text-xl font-medium">
-                    15 Units
+                    {item.quantity || 1} Units
                   </p>
                 </div>
               </div>
@@ -90,10 +93,10 @@ export default function ProductDetailsModal({ product, onClose }) {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-neutral-700 text-base font-normal mb-1">
-                    SKU
+                    Order ID
                   </p>
-                  <p className="text-neutral-700 text-xl font-medium">
-                    {product.orderId}
+                  <p className="text-neutral-700 text-base font-medium">
+                    {order.order_id_display}
                   </p>
                 </div>
                 <div>
@@ -102,16 +105,19 @@ export default function ProductDetailsModal({ product, onClose }) {
                   </p>
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                      product.status
+                      order.status
                     )}`}
                   >
-                    {product.status}
+                    {order.status}
                   </span>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <button onClick={onClose} className="w-80 h-11 p-2.5 bg-yellow-500 rounded-lg inline-flex justify-center items-center gap-2.5 hover:bg-yellow-600 transition-colors">
+              <button
+                onClick={onClose}
+                className="w-80 h-11 p-2.5 bg-yellow-500 rounded-lg inline-flex justify-center items-center gap-2.5 hover:bg-yellow-600 transition-colors"
+              >
                 <span className="text-white text-xl font-bold leading-snug">
                   Cancel
                 </span>
