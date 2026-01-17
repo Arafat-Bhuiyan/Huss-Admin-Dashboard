@@ -3,7 +3,7 @@ import Orders from "../../assets/images/orders.svg";
 import Unsold from "../../assets/images/unsold.svg";
 import Sold from "../../assets/images/sold.svg";
 import { useState } from "react";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search, ChevronLeft } from "lucide-react";
 import EditProductModal from "./EditProduct";
 import AddProductModal from "./AddProduct";
 import {
@@ -58,6 +58,8 @@ export default function ProductsPage() {
   const [selectedStatus, setSelectedStatus] = useState("All Categories");
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [activePage, setActivePage] = useState(1);
+  const PRODUCTS_PER_PAGE = 10;
 
   const statuses = [
     "All Categories",
@@ -81,6 +83,13 @@ export default function ProductsPage() {
 
     return matchesCategory && matchesSearch;
   });
+
+  // ✅ Pagination Logic
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice(
+    (activePage - 1) * PRODUCTS_PER_PAGE,
+    activePage * PRODUCTS_PER_PAGE,
+  );
 
   const handleEdit = (product) => {
     setSelectedProduct(product);
@@ -144,7 +153,7 @@ export default function ProductsPage() {
           minWidth: "300px",
           padding: "16px",
         },
-      }
+      },
     );
   };
 
@@ -156,7 +165,7 @@ export default function ProductsPage() {
 
   console.log("Products 2.0:", products);
   return (
-    <div className="py-8 flex flex-col gap-5">
+    <div className="py-8 flex flex-col gap-5 min-h-screen">
       <div>
         <div className="w-44 justify-start text-[#363636] text-3xl font-semibold font-inter mb-2">
           Dashboard
@@ -298,8 +307,8 @@ export default function ProductsPage() {
               </thead>
 
               <tbody>
-                {filteredProducts.length > 0 ? (
-                  filteredProducts.map((product) => (
+                {paginatedProducts.length > 0 ? (
+                  paginatedProducts.map((product) => (
                     <tr
                       key={product.id}
                       className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
@@ -362,6 +371,79 @@ export default function ProductsPage() {
           </div>
         )}
       </div>
+
+      {filteredProducts.length > 0 && (
+        <div className="flex justify-between mt-5">
+          <p className="text-black font-medium text-xl">
+            Showing{" "}
+            {filteredProducts.length === 0
+              ? 0
+              : (activePage - 1) * PRODUCTS_PER_PAGE + 1}{" "}
+            to{" "}
+            {Math.min(activePage * PRODUCTS_PER_PAGE, filteredProducts.length)}{" "}
+            of {filteredProducts.length} products
+          </p>
+          <div>
+            {/* Interactive Pagination */}
+            <div className="flex items-center" style={{ gap: "10px" }}>
+              {/* Left Arrow */}
+              <button
+                className="py-[6px] px-[7px] border border-black rounded-md"
+                style={{ display: "flex", alignItems: "center" }}
+                aria-label="Previous Page"
+                onClick={() =>
+                  setActivePage((prev) => (prev > 1 ? prev - 1 : prev))
+                }
+                disabled={activePage === 1}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              {/* Page Numbers */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    className={`py-[2px] px-[8px] border border-black rounded-md font-semibold ${
+                      activePage === page
+                        ? "bg-[#343F4F] text-white"
+                        : "text-black"
+                    }`}
+                    style={{ minWidth: "32px" }}
+                    onClick={() => setActivePage(page)}
+                  >
+                    {page}
+                  </button>
+                ),
+              )}
+              {/* Right Arrow */}
+              <button
+                className="py-[6px] px-[7px] border border-black rounded-md"
+                style={{ display: "flex", alignItems: "center" }}
+                aria-label="Next Page"
+                onClick={() =>
+                  setActivePage((prev) => (prev < totalPages ? prev + 1 : prev))
+                }
+                disabled={activePage === totalPages || totalPages === 0}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 4l4 4-4 4"
+                    stroke="#000"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit Modal */}
       {isEditModalOpen && (

@@ -252,12 +252,6 @@ export default function UserTable({ onEdit, onDelete }) {
               {selectedUserIds.length} user(s) selected
             </span>
           )}
-          <a
-            href="#"
-            className="text-[#FFBA07] font-semibold hover:text-yellow-600 text-sm underline"
-          >
-            See All
-          </a>
         </div>
       </div>
 

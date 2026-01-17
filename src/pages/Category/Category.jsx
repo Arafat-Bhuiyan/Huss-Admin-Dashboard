@@ -1,4 +1,4 @@
-import { Folder, SquarePen, Trash2 } from "lucide-react";
+import { Folder, SquarePen, Trash2, ChevronLeft } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import {
@@ -12,9 +12,18 @@ export const Category = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [activePage, setActivePage] = useState(1);
+  const ITEMS_PER_PAGE = 6;
 
   // API query/mutation hooks
   const { data: categoryData, isLoading, isError } = useGetCategoryListQuery();
+
+  // ✅ Pagination Logic
+  const totalPages = Math.ceil((categoryData?.length || 0) / ITEMS_PER_PAGE);
+  const paginatedData = categoryData?.slice(
+    (activePage - 1) * ITEMS_PER_PAGE,
+    activePage * ITEMS_PER_PAGE,
+  );
   const [deleteCategory] = useDeleteCategoryMutation();
 
   const handleAddCategory = (newCategory) => {
@@ -62,7 +71,7 @@ export const Category = () => {
                   toast.success("Category deleted successfully");
                 } catch (err) {
                   toast.error(
-                    err?.data?.message || "Failed to delete category"
+                    err?.data?.message || "Failed to delete category",
                   );
                 }
               }}
@@ -80,7 +89,7 @@ export const Category = () => {
           minWidth: "300px",
           padding: "16px",
         },
-      }
+      },
     );
   };
 
@@ -116,7 +125,7 @@ export const Category = () => {
             Failed to load categories.
           </div>
         ) : (
-          categoryData?.map((item) => (
+          paginatedData?.map((item) => (
             <div
               key={item.id}
               className="bg-white p-6 rounded-2xl border border-[#F9EFD5] shadow-md hover:shadow-lg transition-shadow flex flex-col h-full"
@@ -171,6 +180,79 @@ export const Category = () => {
           ))
         )}
       </div>
+
+      {categoryData?.length > 0 && (
+        <div className="flex justify-between mt-5">
+          <p className="text-black font-medium text-xl">
+            Showing{" "}
+            {categoryData.length === 0
+              ? 0
+              : (activePage - 1) * ITEMS_PER_PAGE + 1}{" "}
+            to {Math.min(activePage * ITEMS_PER_PAGE, categoryData.length)} of{" "}
+            {categoryData.length} categories
+          </p>
+          <div>
+            {/* Interactive Pagination */}
+            <div className="flex items-center" style={{ gap: "10px" }}>
+              {/* Left Arrow */}
+              <button
+                className="py-[6px] px-[7px] border border-black rounded-md"
+                style={{ display: "flex", alignItems: "center" }}
+                aria-label="Previous Page"
+                onClick={() =>
+                  setActivePage((prev) => (prev > 1 ? prev - 1 : prev))
+                }
+                disabled={activePage === 1}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              {/* Page Numbers */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    className={`py-[2px] px-[8px] border border-black rounded-md font-semibold ${
+                      activePage === page
+                        ? "bg-[#343F4F] text-white"
+                        : "text-black"
+                    }`}
+                    style={{ minWidth: "32px" }}
+                    onClick={() => setActivePage(page)}
+                  >
+                    {page}
+                  </button>
+                ),
+              )}
+              {/* Right Arrow */}
+              <button
+                className="py-[6px] px-[7px] border border-black rounded-md"
+                style={{ display: "flex", alignItems: "center" }}
+                aria-label="Next Page"
+                onClick={() =>
+                  setActivePage((prev) => (prev < totalPages ? prev + 1 : prev))
+                }
+                disabled={activePage === totalPages || totalPages === 0}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 4l4 4-4 4"
+                    stroke="#000"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {isAddModalOpen && (
         <AddCategoryModal
           onClose={() => setIsAddModalOpen(false)}

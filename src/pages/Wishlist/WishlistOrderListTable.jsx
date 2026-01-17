@@ -1,22 +1,59 @@
-"use client";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ChevronLeft } from "lucide-react";
+import toast from "react-hot-toast";
 import { useGetWishlistQuery } from "../../redux/api/authApi";
 
 export default function WishlistOrdersTable() {
   const { data: wishlistData = [], isLoading } = useGetWishlistQuery();
   const navigate = useNavigate();
+  const [activePage, setActivePage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+
+  // ✅ Pagination Logic
+  const totalPages = Math.ceil(wishlistData.length / ITEMS_PER_PAGE);
+  const paginatedData = wishlistData.slice(
+    (activePage - 1) * ITEMS_PER_PAGE,
+    activePage * ITEMS_PER_PAGE,
+  );
 
   const handleDelete = (orderIdToDelete) => {
-    if (
-      window.confirm(
-        `Are you sure you want to delete product ID "${orderIdToDelete}"?`,
-      )
-    ) {
-      // Logic for product deletion via API would go here
-      console.log("Deleting product:", orderIdToDelete);
-    }
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-3">
+          <p className="text-sm font-medium text-gray-900">
+            Are you sure you want to delete product ID{" "}
+            <b>"{orderIdToDelete}"</b> from wishlist?
+          </p>
+          <div className="flex gap-2 justify-end">
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1 text-xs font-semibold text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                // API call to delete product from wishlist would go here
+                console.log("Deleting product:", orderIdToDelete);
+                toast.success("Product deleted successfully!");
+              }}
+              className="px-3 py-1 text-xs font-semibold text-white bg-red-500 rounded hover:bg-red-600 transition-colors"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        duration: 5000,
+        position: "top-center",
+        style: {
+          minWidth: "300px",
+        },
+      },
+    );
   };
 
   return (
@@ -61,8 +98,8 @@ export default function WishlistOrdersTable() {
                     Loading wishlist...
                   </td>
                 </tr>
-              ) : wishlistData.length > 0 ? (
-                wishlistData.map((item) => (
+              ) : paginatedData.length > 0 ? (
+                paginatedData.map((item) => (
                   <tr
                     key={item.prod_id}
                     className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
@@ -110,6 +147,78 @@ export default function WishlistOrdersTable() {
           </table>
         </div>
       </div>
+
+      {wishlistData.length > 0 && (
+        <div className="flex justify-between mt-5">
+          <p className="text-black font-medium text-xl">
+            Showing{" "}
+            {wishlistData.length === 0
+              ? 0
+              : (activePage - 1) * ITEMS_PER_PAGE + 1}{" "}
+            to {Math.min(activePage * ITEMS_PER_PAGE, wishlistData.length)} of{" "}
+            {wishlistData.length} items
+          </p>
+          <div>
+            {/* Interactive Pagination */}
+            <div className="flex items-center" style={{ gap: "10px" }}>
+              {/* Left Arrow */}
+              <button
+                className="py-[6px] px-[7px] border border-black rounded-md"
+                style={{ display: "flex", alignItems: "center" }}
+                aria-label="Previous Page"
+                onClick={() =>
+                  setActivePage((prev) => (prev > 1 ? prev - 1 : prev))
+                }
+                disabled={activePage === 1}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              {/* Page Numbers */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    className={`py-[2px] px-[8px] border border-black rounded-md font-semibold ${
+                      activePage === page
+                        ? "bg-[#343F4F] text-white"
+                        : "text-black"
+                    }`}
+                    style={{ minWidth: "32px" }}
+                    onClick={() => setActivePage(page)}
+                  >
+                    {page}
+                  </button>
+                ),
+              )}
+              {/* Right Arrow */}
+              <button
+                className="py-[6px] px-[7px] border border-black rounded-md"
+                style={{ display: "flex", alignItems: "center" }}
+                aria-label="Next Page"
+                onClick={() =>
+                  setActivePage((prev) => (prev < totalPages ? prev + 1 : prev))
+                }
+                disabled={activePage === totalPages || totalPages === 0}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 4l4 4-4 4"
+                    stroke="#000"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

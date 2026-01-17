@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search, ChevronLeft } from "lucide-react";
 import { useState } from "react";
 import { useGetOrderListQuery } from "../../redux/api/authApi";
 
@@ -11,7 +11,9 @@ export default function OrdersTable({ onViewDetails }) {
   const [selectedStatus, setSelectedStatus] = useState("Status");
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [activePage, setActivePage] = useState(1);
   const statuses = ["Status", "Shipped", "Pending", "Delivered"];
+  const ORDERS_PER_PAGE = 10;
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
@@ -41,6 +43,13 @@ export default function OrdersTable({ onViewDetails }) {
 
     return matchesStatus && matchesSearch;
   });
+
+  // ✅ Pagination Logic
+  const totalPages = Math.ceil(filteredOrders.length / ORDERS_PER_PAGE);
+  const paginatedOrders = filteredOrders.slice(
+    (activePage - 1) * ORDERS_PER_PAGE,
+    activePage * ORDERS_PER_PAGE,
+  );
 
   return (
     <div className="py-8">
@@ -112,12 +121,6 @@ export default function OrdersTable({ onViewDetails }) {
       {/* Order List Title */}
       <div className="flex justify-between items-center mb-6 gap-4">
         <h2 className="text-2xl font-semibold text-[#363636]">Order List</h2>
-        <a
-          href="#"
-          className="text-[#FFBA07] font-semibold hover:text-yellow-600 text-sm underline"
-        >
-          See All
-        </a>
       </div>
 
       {/* Table */}
@@ -162,8 +165,8 @@ export default function OrdersTable({ onViewDetails }) {
                 </tr>
               </thead>
               <tbody>
-                {filteredOrders.length > 0 ? (
-                  filteredOrders.map((order) => (
+                {paginatedOrders.length > 0 ? (
+                  paginatedOrders.map((order) => (
                     <tr
                       key={order.id}
                       className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
@@ -186,7 +189,7 @@ export default function OrdersTable({ onViewDetails }) {
                       <td className="px-6 py-4 text-center text-sm">
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                            order.status
+                            order.status,
                           )}`}
                         >
                           {order.status}
@@ -217,6 +220,78 @@ export default function OrdersTable({ onViewDetails }) {
           </div>
         )}
       </div>
+
+      {filteredOrders.length > 0 && (
+        <div className="flex justify-between mt-5">
+          <p className="text-black font-medium text-xl">
+            Showing{" "}
+            {filteredOrders.length === 0
+              ? 0
+              : (activePage - 1) * ORDERS_PER_PAGE + 1}{" "}
+            to {Math.min(activePage * ORDERS_PER_PAGE, filteredOrders.length)}{" "}
+            of {filteredOrders.length} orders
+          </p>
+          <div>
+            {/* Interactive Pagination */}
+            <div className="flex items-center" style={{ gap: "10px" }}>
+              {/* Left Arrow */}
+              <button
+                className="py-[6px] px-[7px] border border-black rounded-md"
+                style={{ display: "flex", alignItems: "center" }}
+                aria-label="Previous Page"
+                onClick={() =>
+                  setActivePage((prev) => (prev > 1 ? prev - 1 : prev))
+                }
+                disabled={activePage === 1}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              {/* Page Numbers */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    className={`py-[2px] px-[8px] border border-black rounded-md font-semibold ${
+                      activePage === page
+                        ? "bg-[#343F4F] text-white"
+                        : "text-black"
+                    }`}
+                    style={{ minWidth: "32px" }}
+                    onClick={() => setActivePage(page)}
+                  >
+                    {page}
+                  </button>
+                ),
+              )}
+              {/* Right Arrow */}
+              <button
+                className="py-[6px] px-[7px] border border-black rounded-md"
+                style={{ display: "flex", alignItems: "center" }}
+                aria-label="Next Page"
+                onClick={() =>
+                  setActivePage((prev) => (prev < totalPages ? prev + 1 : prev))
+                }
+                disabled={activePage === totalPages || totalPages === 0}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 4l4 4-4 4"
+                    stroke="#000"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
