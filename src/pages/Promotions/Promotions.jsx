@@ -1,6 +1,12 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import PromotionModal from "./PromotionModal";
+import {
+  useGetPromotionsQuery,
+  useCreatePromotionsMutation,
+  useUpdatePromotionsMutation,
+  useDeletePromotionsMutation,
+} from "../../redux/api/authApi";
 
 const mockPromotions = [
   {
@@ -16,31 +22,46 @@ const mockPromotions = [
 ];
 
 export function Promotions() {
-  const [promotions, setPromotions] = useState(mockPromotions);
+  const { data: promotions = [], isLoading, isError } = useGetPromotionsQuery();
+  const [createPromotion] = useCreatePromotionsMutation();
+  const [updatePromotion] = useUpdatePromotionsMutation();
+  const [deletePromotion] = useDeletePromotionsMutation();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPromotion, setEditingPromotion] = useState(null);
-  const handleAddPromotion = (formData) => {
-    const newPromotion = {
-      id: Date.now(),
-      ...formData,
-    };
-    setPromotions([...promotions, newPromotion]);
-    setIsModalOpen(false);
+
+  const handleAddPromotion = async (formData) => {
+    try {
+      await createPromotion(formData).unwrap();
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error("Failed to create promotion:", err);
+      alert("Failed to create promotion. Please try again.");
+    }
   };
 
-  const handleEditPromotion = (formData) => {
-    setPromotions(
-      promotions.map((p) =>
-        p.id === editingPromotion.id ? { ...p, ...formData } : p
-      )
-    );
-    setEditingPromotion(null);
-    setIsModalOpen(false);
+  const handleEditPromotion = async (formData) => {
+    try {
+      await updatePromotion({
+        id: editingPromotion.id,
+        data: formData,
+      }).unwrap();
+      setEditingPromotion(null);
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error("Failed to update promotion:", err);
+      alert("Failed to update promotion. Please try again.");
+    }
   };
 
-  const handleDeletePromotion = (id) => {
+  const handleDeletePromotion = async (id) => {
     if (window.confirm("Are you sure you want to delete this promotion?")) {
-      setPromotions(promotions.filter((p) => p.id !== id));
+      try {
+        await deletePromotion(id).unwrap();
+      } catch (err) {
+        console.error("Failed to delete promotion:", err);
+        alert("Failed to delete promotion. Please try again.");
+      }
     }
   };
 
@@ -95,6 +116,9 @@ export function Promotions() {
                     Promotion Name
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-bold text-gray-700">
+                    Description
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-bold text-gray-700">
                     Discount Type
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-bold text-gray-700">
@@ -120,19 +144,22 @@ export function Promotions() {
                     <td className="px-4 py-4 text-sm text-gray-900">
                       {promotion.name}
                     </td>
-                    <td className="px-4 py-4 text-sm text-gray-600">
-                      {promotion.discountType}
+                    <td className="px-4 py-4 text-sm text-gray-600 max-w-xs truncate">
+                      {promotion.description}
                     </td>
                     <td className="px-4 py-4 text-sm text-gray-600">
-                      {promotion.startDate}
+                      {promotion.discount_type} ({promotion.discount_amount}%)
                     </td>
-                    <td className="px-4 py-4 text-sm text-gray-600">
-                      {promotion.endDate}
+                    <td className="px-4 py-4 text-sm text-gray-600 whitespace-nowrap">
+                      {promotion.start_date}
+                    </td>
+                    <td className="px-4 py-4 text-sm text-gray-600 whitespace-nowrap">
+                      {promotion.end_date}
                     </td>
                     <td className="py-4">
                       <div
-                        className={`inline px-4 text-center rounded-full py-1 ${
-                          promotion.status === "Active"
+                        className={`inline px-4 text-center rounded-full py-1 capitalize ${
+                          promotion.status === "active"
                             ? "bg-[#B7FFD0] text-black"
                             : "bg-red-500 text-white"
                         }`}
@@ -168,8 +195,18 @@ export function Promotions() {
               onClose={handleCloseModal}
             />
           )}
-          {/* Empty State Message */}
-          {promotions.length === 0 && (
+          {/* Loading & Empty States */}
+          {isLoading && (
+            <div className="py-12 text-center text-gray-500">
+              Loading promotions...
+            </div>
+          )}
+          {isError && (
+            <div className="py-12 text-center text-red-500">
+              Error loading promotions data.
+            </div>
+          )}
+          {!isLoading && promotions.length === 0 && (
             <div className="py-12 text-center">
               <p className="text-gray-500">
                 No active promotions yet. Create one to get started!

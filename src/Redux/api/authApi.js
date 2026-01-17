@@ -135,6 +135,40 @@ export const authApi = api.injectEndpoints({
       }),
       providesTags: ["Dashboard"],
     }),
+    // === Get Promotions ===
+    getPromotions: builder.query({
+      query: () => ({
+        url: "/promotions/list/",
+        method: "GET",
+      }),
+      providesTags: ["Promotions"],
+    }),
+    // === Create Promotions ===
+    createPromotions: builder.mutation({
+      query: (data) => ({
+        url: "/promotions/create/",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Promotions"],
+    }),
+    // === Update Promotions ===
+    updatePromotions: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/promotions/update/${id}/`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Promotions"],
+    }),
+    // === Delete Promotions ===
+    deletePromotions: builder.mutation({
+      query: (id) => ({
+        url: `/promotions/${id}/delete/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Promotions"],
+    }),
   }),
 });
 
@@ -155,4 +189,8 @@ export const {
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
   useGetDashboardDataQuery,
+  useGetPromotionsQuery,
+  useCreatePromotionsMutation,
+  useUpdatePromotionsMutation,
+  useDeletePromotionsMutation,
 } = authApi;
