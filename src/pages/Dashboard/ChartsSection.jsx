@@ -62,6 +62,13 @@ const ChartsSection = ({ analytics }) => {
   ];
 
   const [selectedView, setSelectedView] = useState("monthly");
+  const [hiddenLabels, setHiddenLabels] = useState([]);
+
+  const toggleLabel = (label) => {
+    setHiddenLabels((prev) =>
+      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label],
+    );
+  };
 
   // ✅ Dynamic line chart data based on selectedView
   const lineChartData = {
@@ -118,13 +125,18 @@ const ChartsSection = ({ analytics }) => {
 
   // ✅ Pie Chart Data
   const pieChartData = {
-    labels: categoryDist.labels,
+    labels: categoryDist.labels.filter(
+      (label) => !hiddenLabels.includes(label),
+    ),
     datasets: [
       {
-        data: categoryDist.data,
-        backgroundColor: categoryDist.labels.map(
-          (_, i) => colors[i % colors.length],
+        data: categoryDist.data.filter(
+          (_, i) => !hiddenLabels.includes(categoryDist.labels[i]),
         ),
+        backgroundColor: categoryDist.labels
+          .map((label, i) => ({ label, color: colors[i % colors.length] }))
+          .filter((item) => !hiddenLabels.includes(item.label))
+          .map((item) => item.color),
         borderWidth: 0,
       },
     ],
@@ -198,20 +210,27 @@ const ChartsSection = ({ analytics }) => {
               <Pie data={pieChartData} options={pieChartOptions} />
             </div>
             <div className="w-[55%] grid grid-cols-2 gap-x-2 gap-y-3 overflow-y-auto max-h-full pr-2 custom-scrollbar">
-              {categoryDist.labels.map((label, i) => (
-                <div key={i} className="flex items-center gap-2">
+              {categoryDist.labels.map((label, i) => {
+                const isHidden = hiddenLabels.includes(label);
+                return (
                   <div
-                    className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: colors[i % colors.length] }}
-                  />
-                  <span
-                    className="text-[11px] font-medium text-gray-600 truncate"
-                    title={label}
+                    key={i}
+                    onClick={() => toggleLabel(label)}
+                    className={`flex items-center gap-2 cursor-pointer transition-opacity duration-200 ${isHidden ? "opacity-30" : "opacity-100"}`}
                   >
-                    {label}
-                  </span>
-                </div>
-              ))}
+                    <div
+                      className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: colors[i % colors.length] }}
+                    />
+                    <span
+                      className={`text-[11px] font-medium text-gray-600 truncate ${isHidden ? "line-through" : ""}`}
+                      title={label}
+                    >
+                      {label}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
