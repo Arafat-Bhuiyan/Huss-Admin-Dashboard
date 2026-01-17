@@ -1,41 +1,60 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
+import { useCreateAndEditTrackingMutation } from "../../redux/api/authApi";
 
 export default function TrackingModal({ isOpen, onClose, user, onSave }) {
+  const [createAndEditTracking, { isLoading: isSaving }] =
+    useCreateAndEditTrackingMutation();
   const [form, setForm] = useState({
-    orderId: "",
-    trackingNumber: "",
-    status: "Pending",
-    date: "",
-    customer: "",
+    order_id_display: "",
+    tracking_number: "",
+    status: "pending",
+    created_at: "",
+    customer_name: "",
   });
 
   useEffect(() => {
     if (user) {
-      setForm(user);
+      setForm({
+        ...user,
+        order_id_display: user.order_id_display || "",
+        tracking_number: user.tracking_number || "",
+        status: user.status || "pending",
+      });
     } else {
       setForm({
-        orderId: "",
-        trackingNumber: "",
-        status: "Pending",
-        date: "",
-        customer: "",
+        order_id_display: "",
+        tracking_number: "",
+        status: "pending",
+        created_at: "",
+        customer_name: "",
       });
     }
   }, [user, isOpen]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = () => {
-    if (!form.orderId || !form.trackingNumber || !form.status) {
+  const handleSubmit = async () => {
+    if (!form.order_id_display || !form.tracking_number || !form.status) {
       toast.error("All fields are required");
       return;
     }
 
-    onSave(form);
-    onClose();
-    toast.success(user ? "Updated successfully!" : "Added successfully!");
+    const payload = {
+      order_id: user ? user.id : form.order_id_display,
+      tracking_number: form.tracking_number,
+      status: form.status,
+    };
+
+    try {
+      await createAndEditTracking(payload).unwrap();
+      toast.success(user ? "Updated successfully!" : "Added successfully!");
+      onSave(form);
+      onClose();
+    } catch (err) {
+      toast.error(err?.data?.message || "Something went wrong!");
+    }
   };
 
   return (
@@ -63,8 +82,10 @@ export default function TrackingModal({ isOpen, onClose, user, onSave }) {
             </label>
             <input
               type="text"
-              value={form.orderId}
-              onChange={(e) => setForm({ ...form, orderId: e.target.value })}
+              value={form.order_id_display}
+              onChange={(e) =>
+                setForm({ ...form, order_id_display: e.target.value })
+              }
               className="w-full p-3 border border-[#C1C1C1] rounded-lg"
             />
           </div>
@@ -76,9 +97,9 @@ export default function TrackingModal({ isOpen, onClose, user, onSave }) {
             </label>
             <input
               type="text"
-              value={form.trackingNumber}
+              value={form.tracking_number}
               onChange={(e) =>
-                setForm({ ...form, trackingNumber: e.target.value })
+                setForm({ ...form, tracking_number: e.target.value })
               }
               className="w-full p-3 border border-[#C1C1C1] rounded-lg"
             />
@@ -91,12 +112,15 @@ export default function TrackingModal({ isOpen, onClose, user, onSave }) {
             </label>
             <select
               value={form.status}
-              onChange={(e) => setForm({ ...form, status: e.target.value })}
-              className="w-full p-3 border border-[#C1C1C1] rounded-lg"
+              onChange={(e) =>
+                setForm({ ...form, status: e.target.value.toLowerCase() })
+              }
+              className="w-full p-3 border border-[#C1C1C1] rounded-lg capitalize"
             >
-              <option>Pending</option>
-              <option>Shipped</option>
-              <option>Delivered</option>
+              <option value="pending">Pending</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
             </select>
           </div>
         </div>
@@ -104,9 +128,19 @@ export default function TrackingModal({ isOpen, onClose, user, onSave }) {
         <div className="absolute bottom-8 left-8 right-8 flex items-center gap-[10px]">
           <button
             onClick={handleSubmit}
-            className="w-full bg-[#FFBA07] text-white rounded-[8px] p-[10px] font-semibold"
+            disabled={isSaving}
+            className={`w-full bg-[#FFBA07] text-white rounded-[8px] p-[10px] font-semibold flex items-center justify-center gap-2 ${
+              isSaving ? "opacity-70 cursor-not-allowed" : ""
+            }`}
           >
-            Save
+            {isSaving ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Saving...
+              </>
+            ) : (
+              "Save"
+            )}
           </button>
 
           <button

@@ -210,7 +210,16 @@ export const authApi = api.injectEndpoints({
         body: data,
       }),
       invalidatesTags: ["Wishlist"],
-    }), 
+    }),
+    // === Create and Edit Tracking ===
+    createAndEditTracking: builder.mutation({
+      query: (data) => ({
+        url: "/tracking/save/",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Tracking", "Orders"],
+    }),
   }),
 });
 
@@ -240,4 +249,5 @@ export const {
   useGetWishlistQuery,
   useGetSingleWishlistDetailQuery,
   useCreateOfferMutation,
+  useCreateAndEditTrackingMutation,
 } = authApi;
