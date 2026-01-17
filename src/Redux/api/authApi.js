@@ -169,6 +169,23 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Promotions"],
     }),
+    // === Users List ===
+    getUsersList: builder.query({
+      query: () => ({
+        url: "/users-list/",
+        method: "GET",
+      }),
+      providesTags: ["Users"],
+    }),
+    //  === Update User ===
+    updateUser: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/admin/users/${id}/status/`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Users"],
+    }),
   }),
 });
 
@@ -193,4 +210,6 @@ export const {
   useCreatePromotionsMutation,
   useUpdatePromotionsMutation,
   useDeletePromotionsMutation,
+  useGetUsersListQuery,
+  useUpdateUserMutation,
 } = authApi;
