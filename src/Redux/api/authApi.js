@@ -164,7 +164,7 @@ export const authApi = api.injectEndpoints({
     // === Delete Promotions ===
     deletePromotions: builder.mutation({
       query: (id) => ({
-        url: `/promotions/${id}/delete/`,
+        url: `/promotion/delete/${id}/`,
         method: "DELETE",
       }),
       invalidatesTags: ["Promotions"],
@@ -186,6 +186,31 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Users"],
     }),
+    //  === Wishlist Get ===
+    getWishlist: builder.query({
+      query: () => ({
+        url: "/products/wishlist/count/",
+        method: "GET",
+      }),
+      providesTags: ["Wishlist"],
+    }),
+    // === Single Wishlist Detail ===
+    getSingleWishlistDetail: builder.query({
+      query: (id) => ({
+        url: `/wishlist/users/by/product/${id}/`,
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "Wishlist", id }],
+    }),
+    // === Create Offer ===
+    createOffer: builder.mutation({
+      query: (data) => ({
+        url: "/create/wishlist/offer/",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Wishlist"],
+    }), 
   }),
 });
 
@@ -212,4 +237,7 @@ export const {
   useDeletePromotionsMutation,
   useGetUsersListQuery,
   useUpdateUserMutation,
+  useGetWishlistQuery,
+  useGetSingleWishlistDetailQuery,
+  useCreateOfferMutation,
 } = authApi;

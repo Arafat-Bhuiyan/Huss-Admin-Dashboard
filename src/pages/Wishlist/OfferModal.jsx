@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
+import { useCreateOfferMutation } from "../../redux/api/authApi";
 
-export default function OfferModal({ isOpen, onClose, user }) {
+export default function OfferModal({
+  isOpen,
+  onClose,
+  user,
+  productId,
+  productName,
+}) {
   const [discountAmount, setDiscountAmount] = useState("");
+  const [createOffer, { isLoading }] = useCreateOfferMutation();
 
   useEffect(() => {
     if (!isOpen) {
@@ -13,9 +21,23 @@ export default function OfferModal({ isOpen, onClose, user }) {
 
   if (!isOpen || !user) return null;
 
-  const handleMakeOffer = () => {
-    toast.success("Offer created successfully!");
-    onClose(); // Close the modal
+  const handleMakeOffer = async () => {
+    try {
+      const payload = {
+        product_id: parseInt(productId),
+        product_name: productName,
+        discount_amount: parseFloat(discountAmount),
+      };
+
+      const response = await createOffer(payload).unwrap();
+      toast.success(response.message || "Offer created successfully!");
+      onClose(); // Close the modal
+    } catch (err) {
+      console.error("Failed to create offer:", err);
+      toast.error(
+        err?.data?.message || "Failed to create offer. Please try again.",
+      );
+    }
   };
 
   return (
@@ -49,7 +71,7 @@ export default function OfferModal({ isOpen, onClose, user }) {
             <input
               type="text"
               readOnly
-              value={user.productId}
+              value={productId}
               className="w-full p-3  border border-[#C1C1C1] rounded-lg text-base font-normal leading-none"
             />
           </div>
@@ -62,7 +84,7 @@ export default function OfferModal({ isOpen, onClose, user }) {
             <input
               type="text"
               readOnly
-              value={user.productName}
+              value={productName}
               className="w-full p-3  border border-[#C1C1C1] rounded-lg text-base font-normal leading-none"
             />
           </div>
@@ -86,10 +108,10 @@ export default function OfferModal({ isOpen, onClose, user }) {
         <div className="absolute bottom-8 left-8 right-8 flex items-center gap-[10px]">
           <button
             onClick={handleMakeOffer}
-            disabled={!discountAmount.trim()}
+            disabled={!discountAmount.trim() || isLoading}
             className="w-full bg-[#FFBA07] text-white rounded-[8px] p-[10px] font-semibold transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Make Offer
+            {isLoading ? "Making Offer..." : "Make Offer"}
           </button>
           <button
             onClick={onClose}

@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import PromotionModal from "./PromotionModal";
 import {
   useGetPromotionsQuery,
@@ -31,38 +32,84 @@ export function Promotions() {
   const [editingPromotion, setEditingPromotion] = useState(null);
 
   const handleAddPromotion = async (formData) => {
+    const loadingToast = toast.loading("Creating promotion...");
     try {
       await createPromotion(formData).unwrap();
+      toast.success("Promotion created successfully!", { id: loadingToast });
       setIsModalOpen(false);
     } catch (err) {
       console.error("Failed to create promotion:", err);
-      alert("Failed to create promotion. Please try again.");
+      toast.error("Failed to create promotion. Please try again.", {
+        id: loadingToast,
+      });
     }
   };
 
   const handleEditPromotion = async (formData) => {
+    const loadingToast = toast.loading("Updating promotion...");
     try {
       await updatePromotion({
         id: editingPromotion.id,
         data: formData,
       }).unwrap();
+      toast.success("Promotion updated successfully!", { id: loadingToast });
       setEditingPromotion(null);
       setIsModalOpen(false);
     } catch (err) {
       console.error("Failed to update promotion:", err);
-      alert("Failed to update promotion. Please try again.");
+      toast.error("Failed to update promotion. Please try again.", {
+        id: loadingToast,
+      });
     }
   };
 
   const handleDeletePromotion = async (id) => {
-    if (window.confirm("Are you sure you want to delete this promotion?")) {
+    const performDelete = async () => {
+      const loadingToast = toast.loading("Deleting promotion...");
       try {
         await deletePromotion(id).unwrap();
+        toast.success("Promotion deleted successfully!", { id: loadingToast });
       } catch (err) {
         console.error("Failed to delete promotion:", err);
-        alert("Failed to delete promotion. Please try again.");
+        toast.error("Failed to delete promotion. Please try again.", {
+          id: loadingToast,
+        });
       }
-    }
+    };
+
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-3">
+          <p className="text-sm font-medium text-gray-900">
+            Are you sure you want to delete this promotion?
+          </p>
+          <div className="flex gap-2 justify-end">
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1 text-xs font-semibold text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                performDelete();
+              }}
+              className="px-3 py-1 text-xs font-semibold text-white bg-red-500 rounded hover:bg-red-600 transition-colors"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        duration: 5000,
+        position: "top-center",
+        style: {
+          minWidth: "300px",
+        },
+      },
+    );
   };
 
   const handleOpenAddModal = () => {
