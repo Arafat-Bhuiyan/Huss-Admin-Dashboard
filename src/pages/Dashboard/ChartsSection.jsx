@@ -29,55 +29,47 @@ ChartJS.register(
   Filler,
 );
 
-const ChartsSection = () => {
+const ChartsSection = ({ analytics }) => {
   // Get user role from redux
   const { user } = useSelector((state) => state.auth);
-  // ✅ Dashboard Data
-  const [dashboardData] = useState({
-    monthlySales: [1000, 1800, 1500, 1900, 1700, 3000, 2800],
-    yearlySales: [
-      12000, 15000, 18000, 22000, 21000, 25000, 30000, 28000, 32000, 31000,
-      29000, 34000,
-    ],
+  // ✅ Fallback and Dynamic Data
+  const salesOverTime = analytics?.sales_over_time || {
+    labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    data: [0, 0, 0, 0, 0, 0, 0],
+  };
 
-    topCategories: [
-      { label: "Survey Equipment", value: 25, color: "#FFC98F" },
-      { label: "Testing & Lab Equipment", value: 20, color: "#EAE2B7" },
-      { label: "Gaming Equipment", value: 15, color: "#FF8C8C" },
-      { label: "Electronics Equipment", value: 25, color: "#F59E0B" },
-      { label: "Accessories Equipment", value: 15, color: "#A9A9A9" },
-    ],
-  });
+  const categoryDist = analytics?.category_distribution || {
+    labels: [],
+    data: [],
+  };
 
-  // ✅ State for selected view (monthly/yearly)
+  const colors = [
+    "#FFBA07",
+    "#0EA5E9",
+    "#10B981",
+    "#F43F5E",
+    "#8B5CF6",
+    "#F59E0B",
+    "#3B82F6",
+    "#10B981",
+    "#EC4899",
+    "#6366F1",
+    "#F97316",
+    "#06B6D4",
+    "#22C55E",
+    "#D946EF",
+    "#A855F7",
+  ];
+
   const [selectedView, setSelectedView] = useState("monthly");
 
   // ✅ Dynamic line chart data based on selectedView
   const lineChartData = {
-    labels:
-      selectedView === "monthly"
-        ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        : [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-          ],
+    labels: salesOverTime.labels,
     datasets: [
       {
         label: "Revenue",
-        data:
-          selectedView === "monthly"
-            ? dashboardData.monthlySales
-            : dashboardData.yearlySales,
+        data: salesOverTime.data,
         borderColor: "#FFBA07",
         borderWidth: 2,
         fill: true,
@@ -126,11 +118,13 @@ const ChartsSection = () => {
 
   // ✅ Pie Chart Data
   const pieChartData = {
-    labels: dashboardData.topCategories.map((item) => item.label),
+    labels: categoryDist.labels,
     datasets: [
       {
-        data: dashboardData.topCategories.map((item) => item.value),
-        backgroundColor: dashboardData.topCategories.map((item) => item.color),
+        data: categoryDist.data,
+        backgroundColor: categoryDist.labels.map(
+          (_, i) => colors[i % colors.length],
+        ),
         borderWidth: 0,
       },
     ],
@@ -142,14 +136,7 @@ const ChartsSection = () => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: "right",
-        labels: {
-          usePointStyle: true,
-          padding: 20,
-          boxWidth: 10,
-          color: "#374151",
-          font: { size: 13 },
-        },
+        display: false,
       },
       tooltip: {
         backgroundColor: "#fff",
@@ -206,8 +193,26 @@ const ChartsSection = () => {
           <h3 className="text-md font-semibold text-gray-900 mb-4">
             Top Categories
           </h3>
-          <div className="h-64">
-            <Pie data={pieChartData} options={pieChartOptions} />
+          <div className="h-64 flex items-center justify-between gap-4">
+            <div className="w-[45%] h-full">
+              <Pie data={pieChartData} options={pieChartOptions} />
+            </div>
+            <div className="w-[55%] grid grid-cols-2 gap-x-2 gap-y-3 overflow-y-auto max-h-full pr-2 custom-scrollbar">
+              {categoryDist.labels.map((label, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <div
+                    className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: colors[i % colors.length] }}
+                  />
+                  <span
+                    className="text-[11px] font-medium text-gray-600 truncate"
+                    title={label}
+                  >
+                    {label}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

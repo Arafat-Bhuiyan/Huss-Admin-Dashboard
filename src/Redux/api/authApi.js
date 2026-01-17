@@ -127,6 +127,14 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Category"],
     }),
+    // === Dashboard Main Data ===
+    getDashboardData: builder.query({
+      query: () => ({
+        url: "/admin/dashboard/summary/",
+        method: "GET",
+      }),
+      providesTags: ["Dashboard"],
+    }),
   }),
 });
 
@@ -146,4 +154,5 @@ export const {
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useGetDashboardDataQuery,
 } = authApi;
