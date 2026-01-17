@@ -47,7 +47,7 @@ export const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
   // Clone statsData and update titles if role is admin
   const dynamicStatsData = statsData.map((item, idx) => {
-    if (user?.role === "admin") {
+    if (user?.role === "Admin") {
       if (idx === 0) return { ...item, title: "Total Sales", value: "$999.32" };
       if (idx === 2)
         return {
@@ -105,7 +105,7 @@ export const Dashboard = () => {
 
         <ChartsSection />
 
-        {user?.role !== "admin" && (
+        {user?.role !== "Admin" && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Add Product */}
             <div className="p-4 bg-white rounded-2xl flex flex-col items-start justify-between gap-4">
