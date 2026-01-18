@@ -134,7 +134,7 @@ export const Category = () => {
                 <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#DBEAFE] to-[#F3E8FF] overflow-hidden">
                   {item.image ? (
                     <img
-                      src={`${import.meta.env.VITE_BASE_URL}${item.image}`}
+                      src={`${import.meta.env.VITE_BASE_URL.split("/api/v1")[0]}${item.image}`}
                       alt={item.category_name}
                       className="w-full h-full object-cover"
                     />

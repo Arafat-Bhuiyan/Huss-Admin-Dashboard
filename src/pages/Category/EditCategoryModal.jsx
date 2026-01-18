@@ -4,7 +4,7 @@ import { useUpdateCategoryMutation } from "../../redux/api/authApi";
 
 const EditCategoryModal = ({ category, onClose, onSave }) => {
   const [categoryName, setCategoryName] = useState(
-    category?.category_name || ""
+    category?.category_name || "",
   );
   const [description, setDescription] = useState(category?.description || "");
   const [image, setImage] = useState(null);
@@ -101,7 +101,7 @@ const EditCategoryModal = ({ category, onClose, onSave }) => {
             {category?.image && !image && (
               <div className="mb-3 relative w-20 h-20 rounded-lg overflow-hidden border border-gray-200">
                 <img
-                  src={`${import.meta.env.VITE_BASE_URL}${category.image}`}
+                  src={`${import.meta.env.VITE_BASE_URL.split("/api/v1")[0]}${category.image}`}
                   alt="Current"
                   className="w-full h-full object-cover"
                 />
