@@ -1,36 +1,30 @@
 import { useState } from "react";
-import { useUpdateProductMutation } from "../../redux/api/authApi";
+import { ChevronLeft } from "lucide-react";
+import {
+  useUpdateProductMutation,
+  useGetCategoryListQuery,
+} from "../../redux/api/authApi";
 
 const EditProductModal = ({ product, onClose, onSave }) => {
+  const { data: categoryData } = useGetCategoryListQuery();
   const [productName, setProductName] = useState(product?.product_name || "");
-  const [category, setCategory] = useState(String(product?.category) || "5");
+  const [category, setCategory] = useState(
+    product?.category?.id ? String(product.category.id) : "",
+  );
   const [description, setDescription] = useState(product?.description || "");
   const [price, setPrice] = useState(product?.price || "");
   const [discount, setDiscount] = useState(product?.discount_percent || 0);
   const [stockQty, setStockQty] = useState(product?.stock_quantity || "");
   const [stockStatus, setStockStatus] = useState(
-    product?.stock_status === "in_stock" ? "In Stock" : "Out of Stock"
+    product?.stock_status === "in_stock" ? "In Stock" : "Out of Stock",
+  );
+  const [isPublished, setIsPublished] = useState(
+    product?.is_published || false,
   );
   const [image, setImage] = useState(null);
 
   // API mutation hook
   const [updateProduct, { isLoading }] = useUpdateProductMutation();
-
-  // Categories with correct Backend IDs (Matches AddProduct.jsx)
-  const categories = [
-    { id: "5", name: "Survey Equipment" },
-    { id: "7", name: "Gaming Equipment" },
-    { id: "8", name: "Testing & Lab Equipment" },
-    { id: "9", name: "Electronics Equipment" },
-    { id: "10", name: "Accessories Equipment" },
-    { id: "11", name: "Industrial Tools" },
-  ];
-
-  const discountTypes = [
-    "Flat 20% off",
-    "Percentage off",
-    "Buy One Get One Free",
-  ];
   const stockStatuses = ["In Stock", "Out of Stock"];
 
   const handleFileChange = (e) => {
@@ -45,6 +39,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
       formData.append("price", price);
       formData.append("stock_quantity", stockQty);
       formData.append("category", category);
+      formData.append("is_published", isPublished);
 
       // Only append image if a new one is selected
       if (image) {
@@ -79,12 +74,22 @@ const EditProductModal = ({ product, onClose, onSave }) => {
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white w-[700px] rounded-xl p-6 relative">
         {/* Modal Header */}
-        <h2 className="text-lg font-semibold text-gray-900 mb-1 text-center">
-          Edit Product
-        </h2>
-        <p className="text-sm text-gray-500 text-center mb-6">
-          Update details for the selected product.
-        </p>
+        <div className="relative">
+          <button
+            onClick={onClose}
+            className="absolute left-0 top-0 p-1 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <ChevronLeft className="w-6 h-6 text-gray-600" />
+          </button>
+          <div className="text-center mb-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">
+              Edit Product
+            </h2>
+            <p className="text-sm text-gray-500">
+              Update details for the selected product.
+            </p>
+          </div>
+        </div>
 
         {/* Form */}
         <div className="grid grid-cols-2 gap-4">
@@ -112,9 +117,10 @@ const EditProductModal = ({ product, onClose, onSave }) => {
               onChange={(e) => setCategory(e.target.value)}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             >
-              {categories.map((cat) => (
+              <option value="">Select Category</option>
+              {categoryData?.map((cat) => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.name}
+                  {cat.category_name}
                 </option>
               ))}
             </select>
@@ -188,6 +194,21 @@ const EditProductModal = ({ product, onClose, onSave }) => {
                   {status}
                 </option>
               ))}
+            </select>
+          </div>
+
+          {/* Product Status */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Product Status
+            </label>
+            <select
+              value={isPublished}
+              onChange={(e) => setIsPublished(e.target.value === "true")}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            >
+              <option value="true">Published</option>
+              <option value="false">Not Published</option>
             </select>
           </div>
 

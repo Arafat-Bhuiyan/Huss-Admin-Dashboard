@@ -13,40 +13,6 @@ import {
 } from "../../redux/api/authApi";
 import { toast } from "react-hot-toast";
 
-// statsData.js
-const statsData = [
-  {
-    title: "Total Orders",
-    value: "120",
-    iconBg: "#FDD2D2",
-    icon: "Orders",
-  },
-  {
-    title: "Active Order",
-    value: "50",
-    iconBg: "#FFF0C8",
-    icon: "Active",
-  },
-  {
-    title: "Sold ",
-    value: "100",
-    iconBg: "#F3E8FF",
-    icon: "Sold",
-  },
-  {
-    title: "Unsold",
-    value: "20",
-    iconBg: "#DCFCE7",
-    icon: "Unsold",
-  },
-];
-
-const icons = {
-  Active,
-  Orders,
-  Unsold,
-  Sold,
-};
 export default function ProductsPage() {
   // Fetch products and categories from API
   const { data: products = [], isLoading, error } = useGetProductsListQuery();
@@ -301,6 +267,9 @@ export default function ProductsPage() {
                     Category
                   </th>
                   <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-center text-xl font-medium text-[#363636]">
                     Actions
                   </th>
                 </tr>
@@ -337,6 +306,15 @@ export default function ProductsPage() {
                       </td>
                       <td className="px-6 py-4 text-center text-base font-medium text-gray-700">
                         {product.category?.category_name || "N/A"}
+                      </td>
+                      <td
+                        className={`px-6 py-4 text-center text-base font-medium ${
+                          product.is_published
+                            ? "text-[#22C55E]"
+                            : "text-[#6B7280]"
+                        }`}
+                      >
+                        {product.is_published ? "Published" : "Not Published"}
                       </td>
                       <td className="px-6 py-4 text-center">
                         <div className="flex items-center justify-center gap-2 h-full">
