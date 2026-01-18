@@ -227,11 +227,11 @@ export const authApi = api.injectEndpoints({
       }),
       providesTags: ["Tracking"],
     }),
-    // === Create and Edit Tracking ===
-    createAndEditTracking: builder.mutation({
-      query: (data) => ({
-        url: "/tracking/save/",
-        method: "POST",
+    // === Update Tracking ===
+    updateTracking: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/tracking/update/${id}/`,
+        method: "PATCH",
         body: data,
       }),
       invalidatesTags: ["Tracking", "Orders"],
@@ -274,7 +274,7 @@ export const {
   useGetSingleWishlistDetailQuery,
   useCreateOfferMutation,
   useGetTrackingListQuery,
-  useCreateAndEditTrackingMutation,
   useGetNormalAdminDashboardDataQuery,
+  useUpdateTrackingMutation,
   useDeleteTrackingMutation,
 } = authApi;

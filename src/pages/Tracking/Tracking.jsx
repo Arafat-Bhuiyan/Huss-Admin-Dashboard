@@ -76,12 +76,6 @@ export const Tracking = () => {
     setIsModalOpen(true);
   };
 
-  // Add button
-  const handleAdd = () => {
-    setSelectedUser(null);
-    setIsModalOpen(true);
-  };
-
   // Save / Update from modal
   const handleSave = (data) => {
     // API call for save/update would go here
@@ -105,16 +99,6 @@ export const Tracking = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-
-          {/* Add Button */}
-          <button
-            className="w-80 h-12 p-2.5 bg-[#FFBA07] rounded-[10px] inline-flex justify-center items-center gap-2.5 hover:bg-yellow-500 transition"
-            onClick={handleAdd}
-          >
-            <span className="text-white text-xl font-semibold leading-snug">
-              + Add Tracking Number
-            </span>
-          </button>
         </div>
 
         {/* Table */}

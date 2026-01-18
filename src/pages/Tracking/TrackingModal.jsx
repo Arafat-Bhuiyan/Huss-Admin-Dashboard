@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
-import { useCreateAndEditTrackingMutation } from "../../redux/api/authApi";
+import { useUpdateTrackingMutation } from "../../redux/api/authApi";
 
 export default function TrackingModal({ isOpen, onClose, user, onSave }) {
-  const [createAndEditTracking, { isLoading: isSaving }] =
-    useCreateAndEditTrackingMutation();
+  const [updateTracking, { isLoading: isUpdating }] =
+    useUpdateTrackingMutation();
+  // We might still need create if "Add" functionality existed, but user asked to remove add button.
+  // So likely this modal is now exclusively for editing existing tracking.
   const [form, setForm] = useState({
     id: "",
     tracking_number: "",
@@ -36,6 +38,7 @@ export default function TrackingModal({ isOpen, onClose, user, onSave }) {
   if (!isOpen) return null;
 
   const handleSubmit = async () => {
+    // validation
     if (!form.id || !form.tracking_number || !form.status) {
       toast.error("All fields are required");
       return;
@@ -48,11 +51,16 @@ export default function TrackingModal({ isOpen, onClose, user, onSave }) {
     };
 
     try {
-      await createAndEditTracking(payload).unwrap();
-      toast.success(user ? "Updated successfully!" : "Added successfully!");
+      await updateTracking({
+        id: user.id,
+        data: payload,
+      }).unwrap();
+
+      toast.success("Updated successfully!");
       onSave(form);
       onClose();
     } catch (err) {
+      console.error("Update failed", err);
       toast.error(err?.data?.message || "Something went wrong!");
     }
   };
@@ -83,10 +91,8 @@ export default function TrackingModal({ isOpen, onClose, user, onSave }) {
             <input
               type="text"
               value={form.id}
-              onChange={(e) =>
-                setForm({ ...form, id: e.target.value })
-              }
-              className="w-full p-3 border border-[#C1C1C1] rounded-lg"
+              disabled // Order ID should typically not be editable during tracking update if it links to an order
+              className="w-full p-3 border border-[#C1C1C1] rounded-lg bg-gray-100 cursor-not-allowed"
             />
           </div>
 
@@ -128,12 +134,12 @@ export default function TrackingModal({ isOpen, onClose, user, onSave }) {
         <div className="absolute bottom-8 left-8 right-8 flex items-center gap-[10px]">
           <button
             onClick={handleSubmit}
-            disabled={isSaving}
+            disabled={isUpdating}
             className={`w-full bg-[#FFBA07] text-white rounded-[8px] p-[10px] font-semibold flex items-center justify-center gap-2 ${
-              isSaving ? "opacity-70 cursor-not-allowed" : ""
+              isUpdating ? "opacity-70 cursor-not-allowed" : ""
             }`}
           >
-            {isSaving ? (
+            {isUpdating ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 Saving...
