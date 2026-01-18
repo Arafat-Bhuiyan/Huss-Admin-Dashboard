@@ -182,7 +182,7 @@ const ChartsSection = ({ analytics }) => {
             >
               Weekly
             </button>
-            <button
+            {/* <button
               onClick={() => setSelectedView("yearly")}
               className={`px-3 py-1 rounded-full ${
                 selectedView === "yearly"
@@ -191,7 +191,7 @@ const ChartsSection = ({ analytics }) => {
               }`}
             >
               Monthly
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="h-64">

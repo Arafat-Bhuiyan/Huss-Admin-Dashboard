@@ -176,7 +176,7 @@ export default function ProductsPage() {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsData.map((item, index) => (
           <div
             key={index}
@@ -198,7 +198,7 @@ export default function ProductsPage() {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* Order List Title */}
       <div className="flex justify-between items-center gap-4">

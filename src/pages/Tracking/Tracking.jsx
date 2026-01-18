@@ -1,24 +1,73 @@
 // Tracking main page
 import { Search, ChevronLeft } from "lucide-react";
 import React, { useState } from "react";
-import { useGetOrderListQuery } from "../../redux/api/authApi";
+import {
+  useDeleteTrackingMutation,
+  useGetTrackingListQuery,
+} from "../../redux/api/authApi";
+import toast from "react-hot-toast";
 import TrackingModal from "./TrackingModal";
 
 export const Tracking = () => {
-  const { data: orders = [], isLoading, isError } = useGetOrderListQuery();
+  const { data: orders = [], isLoading, isError } = useGetTrackingListQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activePage, setActivePage] = useState(1);
   const ITEMS_PER_PAGE = 10;
 
+  const [deleteTracking] = useDeleteTrackingMutation();
+
   const handleDelete = (orderId) => {
-    if (
-      window.confirm("Are you sure you want to delete this tracking entry?")
-    ) {
-      // API call for delete would go here
-      console.log("Delete order:", orderId);
-    }
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-3">
+          <p className="text-sm font-medium text-gray-900">
+            Are you sure you want to delete this tracking entry?
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="px-3 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 rounded hover:bg-gray-200 transition"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={async () => {
+                toast.dismiss(t.id);
+                const deletePromise = deleteTracking(orderId).unwrap();
+
+                toast.promise(deletePromise, {
+                  loading: "Deleting tracking...",
+                  success: (res) =>
+                    res?.message ||
+                    "Tracking information deleted successfully!",
+                  error: (err) =>
+                    `Error: ${err?.data?.message || "Failed to delete"}`,
+                });
+
+                try {
+                  await deletePromise;
+                } catch (err) {
+                  console.error("Failed to delete tracking:", err);
+                }
+              }}
+              className="px-3 py-1.5 text-xs font-semibold text-white bg-red-600 rounded hover:bg-red-700 transition"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        duration: 6000,
+        position: "top-center",
+        style: {
+          minWidth: "300px",
+          padding: "16px",
+        },
+      },
+    );
   };
 
   // Edit button
@@ -165,7 +214,7 @@ export const Tracking = () => {
                                 {order.status}
                               </td>
                               <td className="px-6 py-4 text-center">
-                                {order.created_at}
+                                {order.date?.split(" ")[0]}
                               </td>
                               <td className="px-6 py-4 flex items-center justify-center gap-3">
                                 <button

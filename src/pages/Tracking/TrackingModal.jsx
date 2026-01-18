@@ -7,10 +7,10 @@ export default function TrackingModal({ isOpen, onClose, user, onSave }) {
   const [createAndEditTracking, { isLoading: isSaving }] =
     useCreateAndEditTrackingMutation();
   const [form, setForm] = useState({
-    order_id_display: "",
+    id: "",
     tracking_number: "",
     status: "pending",
-    created_at: "",
+    date: "",
     customer_name: "",
   });
 
@@ -18,16 +18,16 @@ export default function TrackingModal({ isOpen, onClose, user, onSave }) {
     if (user) {
       setForm({
         ...user,
-        order_id_display: user.order_id_display || "",
+        id: user.id || "",
         tracking_number: user.tracking_number || "",
         status: user.status || "pending",
       });
     } else {
       setForm({
-        order_id_display: "",
+        id: "",
         tracking_number: "",
         status: "pending",
-        created_at: "",
+        date: "",
         customer_name: "",
       });
     }
@@ -36,13 +36,13 @@ export default function TrackingModal({ isOpen, onClose, user, onSave }) {
   if (!isOpen) return null;
 
   const handleSubmit = async () => {
-    if (!form.order_id_display || !form.tracking_number || !form.status) {
+    if (!form.id || !form.tracking_number || !form.status) {
       toast.error("All fields are required");
       return;
     }
 
     const payload = {
-      order_id: user ? user.id : form.order_id_display,
+      order_id: form.id,
       tracking_number: form.tracking_number,
       status: form.status,
     };
@@ -82,9 +82,9 @@ export default function TrackingModal({ isOpen, onClose, user, onSave }) {
             </label>
             <input
               type="text"
-              value={form.order_id_display}
+              value={form.id}
               onChange={(e) =>
-                setForm({ ...form, order_id_display: e.target.value })
+                setForm({ ...form, id: e.target.value })
               }
               className="w-full p-3 border border-[#C1C1C1] rounded-lg"
             />

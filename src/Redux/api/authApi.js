@@ -135,6 +135,14 @@ export const authApi = api.injectEndpoints({
       }),
       providesTags: ["Dashboard"],
     }),
+    // === Normal Admin Dashboard Data ===
+    getNormalAdminDashboardData: builder.query({
+      query: () => ({
+        url: "/admin-dashboard-summary/",
+        method: "GET",
+      }),
+      providesTags: ["Dashboard"],
+    }),
     // === Get Promotions ===
     getPromotions: builder.query({
       query: () => ({
@@ -211,12 +219,28 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Wishlist"],
     }),
+    // === Tracking List ===
+    getTrackingList: builder.query({
+      query: () => ({
+        url: "/trackings/",
+        method: "GET",
+      }),
+      providesTags: ["Tracking"],
+    }),
     // === Create and Edit Tracking ===
     createAndEditTracking: builder.mutation({
       query: (data) => ({
         url: "/tracking/save/",
         method: "POST",
         body: data,
+      }),
+      invalidatesTags: ["Tracking", "Orders"],
+    }),
+    // === Delete Tracking ===
+    deleteTracking: builder.mutation({
+      query: (id) => ({
+        url: `/tracking/delete/${id}/`,
+        method: "DELETE",
       }),
       invalidatesTags: ["Tracking", "Orders"],
     }),
@@ -249,5 +273,8 @@ export const {
   useGetWishlistQuery,
   useGetSingleWishlistDetailQuery,
   useCreateOfferMutation,
+  useGetTrackingListQuery,
   useCreateAndEditTrackingMutation,
+  useGetNormalAdminDashboardDataQuery,
+  useDeleteTrackingMutation,
 } = authApi;

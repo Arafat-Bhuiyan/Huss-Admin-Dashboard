@@ -1,6 +1,9 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useGetDashboardDataQuery } from "../../redux/api/authApi";
+import {
+  useGetDashboardDataQuery,
+  useGetNormalAdminDashboardDataQuery,
+} from "../../redux/api/authApi";
 import Revenue from "../../assets/images/revenue.svg";
 import Orders from "../../assets/images/orders.svg";
 import Customers from "../../assets/images/customers.png";
@@ -8,34 +11,6 @@ import Products from "../../assets/images/products.svg";
 import ChartsSection from "./ChartsSection";
 import plus from "../../assets/icons/plusIcon.png";
 import promotion from "../../assets/icons/promotionIcon.png";
-
-// statsData.js
-const statsData = [
-  {
-    title: "Total Revenue",
-    value: "$24,589.32",
-    iconBg: "#FFF0C8",
-    icon: "Revenue",
-  },
-  {
-    title: "Total Orders",
-    value: "1,243",
-    iconBg: "#FDD2D2",
-    icon: "Orders",
-  },
-  {
-    title: "Total Products",
-    value: "156",
-    iconBg: "#F3E8FF",
-    icon: "Products",
-  },
-  {
-    title: "Total Users",
-    value: "843",
-    iconBg: "#DCFCE7",
-    icon: "Customers",
-  },
-];
 
 const icons = {
   Revenue,
@@ -47,43 +22,71 @@ const icons = {
 export const Dashboard = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+  const isAdmin = user?.role === "Admin";
+
   const {
     data: dashboardData,
-    isLoading,
-    isError,
-  } = useGetDashboardDataQuery();
+    isLoading: superAdminIsLoading,
+    isError: superAdminIsError,
+  } = useGetDashboardDataQuery(undefined, { skip: isAdmin });
 
-  // Map API summary data to stats cards
-  const summary = dashboardData?.summary;
+  const {
+    data: normalAdminDashboardData,
+    isLoading: normalAdminIsLoading,
+    isError: normalAdminIsError,
+  } = useGetNormalAdminDashboardDataQuery(undefined, { skip: !isAdmin });
+
+  // Select appropriate data based on role
+  const currentSummary = isAdmin
+    ? normalAdminDashboardData?.top_cards
+    : dashboardData?.summary;
+  const currentAnalytics = isAdmin
+    ? { sales_over_time: normalAdminDashboardData?.sales_analytics }
+    : dashboardData?.analytics;
+
+  const currentLoading = isAdmin ? normalAdminIsLoading : superAdminIsLoading;
+  const currentError = isAdmin ? normalAdminIsError : superAdminIsError;
 
   const dynamicStatsData = [
     {
       title: "Total Revenue",
-      value: summary ? `$${summary.total_revenue.toLocaleString()}` : "$0",
+      value: currentSummary
+        ? `$${(isAdmin ? currentSummary.total_sales : currentSummary.total_revenue).toLocaleString()}`
+        : "$0",
       iconBg: "#FFF0C8",
       icon: "Revenue",
     },
     {
       title: "Total Orders",
-      value: summary ? summary.total_orders.toString() : "0",
+      value: currentSummary ? currentSummary.total_orders.toString() : "0",
       iconBg: "#FDD2D2",
       icon: "Orders",
     },
     {
-      title: "Total Products",
-      value: summary ? summary.total_products.toString() : "0",
+      title: isAdmin ? "Total Users" : "Total Products",
+      value: currentSummary
+        ? (isAdmin
+            ? currentSummary.total_users
+            : currentSummary.total_products
+          ).toString()
+        : "0",
       iconBg: "#F3E8FF",
-      icon: "Products",
+      icon: isAdmin ? "Customers" : "Products",
     },
     {
-      title: user?.role === "Admin" ? "Active Users" : "Total Users",
-      value: summary ? summary.total_users.toString() : "0",
-      iconBg: user?.role === "Admin" ? "#CBD6CE" : "#DCFCE7",
+      title: isAdmin ? "Active Users" : "Total Users",
+      value: currentSummary
+        ? (isAdmin
+            ? currentSummary.active_users
+            : currentSummary.total_users
+          ).toString()
+        : "0",
+      iconBg: isAdmin ? "#DCFCE7" : "#DCFCE7",
       icon: "Customers",
     },
   ];
 
-  if (isLoading) {
+  if (currentLoading) {
     return (
       <div className="min-h-screen bg-[#FAF8F2] flex items-center justify-center">
         <div className="text-2xl font-semibold text-gray-600 animate-pulse">
@@ -93,7 +96,7 @@ export const Dashboard = () => {
     );
   }
 
-  if (isError) {
+  if (currentError) {
     return (
       <div className="min-h-screen bg-[#FAF8F2] flex items-center justify-center">
         <div className="text-2xl font-semibold text-red-600">
@@ -138,7 +141,7 @@ export const Dashboard = () => {
           ))}
         </div>
 
-        <ChartsSection analytics={dashboardData?.analytics} />
+        <ChartsSection analytics={currentAnalytics} />
 
         {user?.role !== "Admin" && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
