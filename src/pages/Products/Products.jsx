@@ -23,6 +23,8 @@ export default function ProductsPage() {
   const [deleteProduct] = useDeleteProductMutation();
   const [selectedStatus, setSelectedStatus] = useState("All Categories");
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedPublishStatus, setSelectedPublishStatus] = useState("Status");
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [activePage, setActivePage] = useState(1);
   const PRODUCTS_PER_PAGE = 10;
@@ -35,11 +37,17 @@ export default function ProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  // ✅ Filter Logic (Search + Category)
+  // ✅ Filter Logic (Search + Category + Status)
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
       selectedStatus === "All Categories" ||
       product.category?.category_name === selectedStatus;
+
+    const matchesPublishStatus =
+      selectedPublishStatus === "Status" ||
+      (selectedPublishStatus === "Published"
+        ? product.is_published
+        : !product.is_published);
 
     const matchesSearch =
       searchTerm === "" ||
@@ -47,7 +55,7 @@ export default function ProductsPage() {
         ?.toLowerCase()
         .includes(searchTerm.toLowerCase().trim());
 
-    return matchesCategory && matchesSearch;
+    return matchesCategory && matchesSearch && matchesPublishStatus;
   });
 
   // ✅ Pagination Logic
@@ -182,43 +190,86 @@ export default function ProductsPage() {
       {/* Search and Filter Bar */}
       <div className="flex justify-between items-center gap-4">
         {/* Filter Selection - Left Side */}
-        <div className="relative">
-          {/* Filter Button */}
-          <button
-            onClick={() => setIsOpen((prev) => !prev)}
-            className="w-52 h-10 pl-4 pr-3 py-2.5 bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-[#BEBBBB] inline-flex justify-between items-center gap-2.5"
-          >
-            <span className="text-neutral-700 text-sm font-semibold leading-snug">
-              {selectedStatus === "Status"
-                ? "All Categories"
-                : `${selectedStatus}`}
-            </span>
-            <ChevronDown
-              className={`transition-transform duration-200 ${
-                isOpen ? "rotate-180" : "rotate-0"
-              }`}
-            />
-          </button>
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            {/* Category Filter Button */}
+            <button
+              onClick={() => setIsOpen((prev) => !prev)}
+              className="w-52 h-10 pl-4 pr-3 py-2.5 bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-[#BEBBBB] inline-flex justify-between items-center gap-2.5"
+            >
+              <span className="text-neutral-700 text-sm font-semibold leading-snug">
+                {selectedStatus === "Status"
+                  ? "All Categories"
+                  : `${selectedStatus}`}
+              </span>
+              <ChevronDown
+                className={`transition-transform duration-200 ${
+                  isOpen ? "rotate-180" : "rotate-0"
+                }`}
+              />
+            </button>
 
-          {/* Dropdown Menu */}
-          {isOpen && (
-            <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-md outline outline-1 outline-[#BEBBBB] z-50">
-              {statuses.map((status) => (
-                <div
-                  key={status}
-                  onClick={() => {
-                    setSelectedStatus(status);
-                    setIsOpen(false);
-                  }}
-                  className={`px-4 py-2 text-sm text-neutral-700 cursor-pointer hover:bg-gray-100 ${
-                    selectedStatus === status ? "bg-gray-100 font-semibold" : ""
-                  }`}
-                >
-                  {status}
-                </div>
-              ))}
-            </div>
-          )}
+            {/* Category Dropdown Menu */}
+            {isOpen && (
+              <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-md outline outline-1 outline-[#BEBBBB] z-50">
+                {statuses.map((status) => (
+                  <div
+                    key={status}
+                    onClick={() => {
+                      setSelectedStatus(status);
+                      setIsOpen(false);
+                    }}
+                    className={`px-4 py-2 text-sm text-neutral-700 cursor-pointer hover:bg-gray-100 ${
+                      selectedStatus === status
+                        ? "bg-gray-100 font-semibold"
+                        : ""
+                    }`}
+                  >
+                    {status}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="relative">
+            {/* Status Filter Button */}
+            <button
+              onClick={() => setIsStatusOpen((prev) => !prev)}
+              className="w-52 h-10 pl-4 pr-3 py-2.5 bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-[#BEBBBB] inline-flex justify-between items-center gap-2.5"
+            >
+              <span className="text-neutral-700 text-sm font-semibold leading-snug">
+                {selectedPublishStatus}
+              </span>
+              <ChevronDown
+                className={`transition-transform duration-200 ${
+                  isStatusOpen ? "rotate-180" : "rotate-0"
+                }`}
+              />
+            </button>
+
+            {/* Status Dropdown Menu */}
+            {isStatusOpen && (
+              <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-md outline outline-1 outline-[#BEBBBB] z-50">
+                {["Status", "Published", "Not Published"].map((status) => (
+                  <div
+                    key={status}
+                    onClick={() => {
+                      setSelectedPublishStatus(status);
+                      setIsStatusOpen(false);
+                    }}
+                    className={`px-4 py-2 text-sm text-neutral-700 cursor-pointer hover:bg-gray-100 ${
+                      selectedPublishStatus === status
+                        ? "bg-gray-100 font-semibold"
+                        : ""
+                    }`}
+                  >
+                    {status}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Search - Right Side */}
