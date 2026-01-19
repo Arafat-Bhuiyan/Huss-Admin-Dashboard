@@ -244,6 +244,23 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Tracking", "Orders"],
     }),
+    // === Return Request List ===
+    getReturnRequestList: builder.query({
+      query: () => ({
+        url: "/return-requests/",
+        method: "GET",
+      }),
+      providesTags: ["ReturnRequest"],
+    }),
+    // === Update Return Request ===
+    updateReturnRequest: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/return-requests/${id}/status/`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["ReturnRequest"],
+    }),
   }),
 });
 
@@ -277,4 +294,6 @@ export const {
   useGetNormalAdminDashboardDataQuery,
   useUpdateTrackingMutation,
   useDeleteTrackingMutation,
+  useGetReturnRequestListQuery,
+  useUpdateReturnRequestMutation,
 } = authApi;

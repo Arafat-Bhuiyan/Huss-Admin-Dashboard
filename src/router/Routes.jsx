@@ -15,6 +15,7 @@ import RequireRole from "./RequireRole";
 import { Tracking } from "../pages/Tracking/Tracking";
 import WishlistUserListTable from "../pages/Wishlist/WishlistUserListTable";
 import { Category } from "../pages/Category/Category";
+import { ReturnRequest } from "../pages/ReturnRequest/ReturnRequest";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Dashboard /> },
           { path: "users", element: <Users /> },
+          { path: "return-request", element: <ReturnRequest /> },
           { path: "orders", element: <OrdersPage /> },
           { path: "tracking", element: <Tracking /> },
           { path: "settings", element: <TermsAndPolicies /> },

@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialMenu = [
   { name: "Dashboard", path: "/", roles: ["Admin", "Super Admin"] },
   { name: "Users", path: "/users", roles: ["Admin", "Super Admin"] },
+  { name: "Return Request", path: "/return-request", roles: ["Admin", "Super Admin"] },
   { name: "Orders", path: "/orders", roles: ["Admin", "Super Admin"] },
   { name: "Tracking", path: "/tracking", roles: ["Admin", "Super Admin"] },
   { name: "Products", path: "/products", roles: ["Super Admin"] },
