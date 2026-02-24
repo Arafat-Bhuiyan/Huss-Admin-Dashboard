@@ -4,7 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/features/authSlice";
 import { useLoginMutation } from "../../redux/api/authApi";
-import logo from "../../assets/images/mtech-logo2.png";
+import logo from "../../assets/images/1ezybuy-logo.png";
 
 export const Login = () => {
   const dispatch = useDispatch();
@@ -44,7 +44,7 @@ export const Login = () => {
         className="w-[656px] h-[692px] bg-white border border-[#C1C1C1] shadow-lg rounded-xl p-16  flex flex-col gap-6"
       >
         <div className="flex justify-center mb-2">
-          <img src={logo} alt="Mtech logo" className="w-36 h-9" />
+          <img src={logo} alt="Mtech logo" className="w-36 h-20" />
         </div>
         <h2 className="text-center text-zinc-800 text-3xl font-normal font-roboto mb-4">
           Secure Dashboard Login
