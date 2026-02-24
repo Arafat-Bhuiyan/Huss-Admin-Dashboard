@@ -44,7 +44,7 @@ export const Login = () => {
         className="w-[656px] h-[692px] bg-white border border-[#C1C1C1] shadow-lg rounded-xl p-16  flex flex-col gap-6"
       >
         <div className="flex justify-center mb-2">
-          <img src={logo} alt="Mtech logo" className="w-36 h-20" />
+          <img src={logo} alt="1ezybuy logo" className="w-36 h-20" />
         </div>
         <h2 className="text-center text-zinc-800 text-3xl font-normal font-roboto mb-4">
           Secure Dashboard Login
@@ -56,7 +56,7 @@ export const Login = () => {
           </label>
           <input
             type="email"
-            placeholder="admin@mtech.com"
+            placeholder="admin@1ezybuy.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required

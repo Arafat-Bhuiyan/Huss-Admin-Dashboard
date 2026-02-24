@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import profile from "../assets/images/profile.png";
 import logoutIcon from "../assets/images/logout.svg";
-import logo from "../assets/images/mtech-logo2.png";
+import logo from "../assets/images/1ezybuy-logo.png";
 import { ChevronDown, LogOut } from "lucide-react";
 
 
@@ -35,7 +35,7 @@ export const Navbar = () => {
     <div className="bg-white pt-10 pb-5 w-10/12 mx-auto flex flex-col gap-9">
       <div className="flex items-center justify-between">
         <Link to="/">
-          <img src={logo} alt="Mtech logo" className="h-9" />
+          <img src={logo} alt="1ezybuy logo" className="h-9" />
         </Link>
         <Link
           to={"/profile"}
