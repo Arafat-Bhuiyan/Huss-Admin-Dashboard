@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import {
   useDeleteTrackingMutation,
   useGetTrackingListQuery,
-} from "../../redux/api/authApi";
+} from "../../Redux/api/authApi";
 import toast from "react-hot-toast";
 import TrackingModal from "./TrackingModal";
 

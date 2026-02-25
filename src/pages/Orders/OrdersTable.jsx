@@ -2,7 +2,7 @@
 
 import { ChevronDown, Search, ChevronLeft } from "lucide-react";
 import { useState } from "react";
-import { useGetOrderListQuery } from "../../redux/api/authApi";
+import { useGetOrderListQuery } from "../../Redux/api/authApi";
 
 export default function OrdersTable({ onViewDetails }) {
   // Fetch orders from API

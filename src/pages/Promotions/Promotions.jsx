@@ -7,7 +7,7 @@ import {
   useCreatePromotionsMutation,
   useUpdatePromotionsMutation,
   useDeletePromotionsMutation,
-} from "../../redux/api/authApi";
+} from "../../Redux/api/authApi";
 
 const mockPromotions = [
   {

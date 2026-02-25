@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../redux/features/authSlice";
-import { useLoginMutation } from "../../redux/api/authApi";
+import { setUser } from "../../Redux/features/authSlice";
+import { useLoginMutation } from "../../Redux/api/authApi";
 import logo from "../../assets/images/1ezybuy-logo.png";
 
 export const Login = () => {

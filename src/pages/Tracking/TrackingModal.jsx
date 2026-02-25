@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
-import { useUpdateTrackingMutation } from "../../redux/api/authApi";
+import { useUpdateTrackingMutation } from "../../Redux/api/authApi";
 
 export default function TrackingModal({ isOpen, onClose, user, onSave }) {
   const [updateTracking, { isLoading: isUpdating }] =

@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import {
   useGetReturnRequestListQuery,
   useUpdateReturnRequestMutation,
-} from "../../redux/api/authApi";
+} from "../../Redux/api/authApi";
 
 const StatusUpdateDropdown = ({ id, currentStatus }) => {
   const [updateStatus] = useUpdateReturnRequestMutation();

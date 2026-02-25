@@ -13,7 +13,7 @@ import {
   useGetTermsAndConditionsQuery,
   useUpdatePrivacyPolicyMutation,
   useUpdateTermsAndConditionsMutation,
-} from "../../redux/api/authApi";
+} from "../../Redux/api/authApi";
 
 export default function TermsAndPolicies() {
   const [activeTab, setActiveTab] = useState("terms");

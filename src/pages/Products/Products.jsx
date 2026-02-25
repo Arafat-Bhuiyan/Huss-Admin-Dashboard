@@ -10,7 +10,7 @@ import {
   useGetProductsListQuery,
   useDeleteProductMutation,
   useGetCategoryListQuery,
-} from "../../redux/api/authApi";
+} from "../../Redux/api/authApi";
 import { toast } from "react-hot-toast";
 
 export default function ProductsPage() {

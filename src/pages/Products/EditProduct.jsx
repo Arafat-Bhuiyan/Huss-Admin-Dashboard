@@ -3,7 +3,7 @@ import { ChevronLeft } from "lucide-react";
 import {
   useUpdateProductMutation,
   useGetCategoryListQuery,
-} from "../../redux/api/authApi";
+} from "../../Redux/api/authApi";
 
 const EditProductModal = ({ product, onClose, onSave }) => {
   const { data: categoryData } = useGetCategoryListQuery();

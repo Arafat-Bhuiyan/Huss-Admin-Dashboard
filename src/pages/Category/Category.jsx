@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import {
   useDeleteCategoryMutation,
   useGetCategoryListQuery,
-} from "../../redux/api/authApi";
+} from "../../Redux/api/authApi";
 import AddCategoryModal from "./AddCategoryModal";
 import EditCategoryModal from "./EditCategoryModal";
 

@@ -3,7 +3,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "../features/authSlice";
 import menuReducer from "../features/menuSlice";
-import { api } from "../../redux/api/api";
+import { api } from "../../Redux/api/api";
 
 const persistConfig = {
   key: "root",

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import { useGetSingleWishlistDetailQuery } from "../../redux/api/authApi";
+import { useGetSingleWishlistDetailQuery } from "../../Redux/api/authApi";
 import OfferModal from "./OfferModal";
 
 export default function WishlistUserListTable() {

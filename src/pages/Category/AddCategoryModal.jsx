@@ -1,6 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useCreateCategoryMutation } from "../../redux/api/authApi";
+import { useCreateCategoryMutation } from "../../Redux/api/authApi";
 
 const AddCategoryModal = ({ onClose, onSave }) => {
   const [categoryName, setCategoryName] = useState("");

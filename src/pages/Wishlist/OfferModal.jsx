@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import toast from "react-hot-toast";
-import { useCreateOfferMutation } from "../../redux/api/authApi";
+import { useCreateOfferMutation } from "../../Redux/api/authApi";
 
 export default function OfferModal({
   isOpen,

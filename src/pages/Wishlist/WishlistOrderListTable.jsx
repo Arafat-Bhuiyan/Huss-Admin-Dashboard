@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import toast from "react-hot-toast";
-import { useGetWishlistQuery } from "../../redux/api/authApi";
+import { useGetWishlistQuery } from "../../Redux/api/authApi";
 
 export default function WishlistOrdersTable() {
   const { data: wishlistData = [], isLoading } = useGetWishlistQuery();

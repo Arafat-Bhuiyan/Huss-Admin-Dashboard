@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   useGetDashboardDataQuery,
   useGetNormalAdminDashboardDataQuery,
-} from "../../redux/api/authApi";
+} from "../../Redux/api/authApi";
 import Revenue from "../../assets/images/revenue.svg";
 import Orders from "../../assets/images/orders.svg";
 import Customers from "../../assets/images/customers.png";

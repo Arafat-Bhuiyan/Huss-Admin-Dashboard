@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import {
   useGetUsersListQuery,
   useUpdateUserMutation,
-} from "../../redux/api/authApi";
+} from "../../Redux/api/authApi";
 
 export default function UserTable({ onEdit, onDelete }) {
   const { data, isLoading, isError } = useGetUsersListQuery();
