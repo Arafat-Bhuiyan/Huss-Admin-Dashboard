@@ -335,7 +335,7 @@ export default function ProductsPage() {
                     >
                       <td className="px-6 py-4 text-center">
                         <img
-                          src={`${import.meta.env.VITE_BASE_URL.split("/api/v1")[0]}${product.image}`}
+                          src={`${import.meta.env.VITE_BASE_URL_MEDIA.split("/api/v1")[0]}${product.image}`}
                           alt={product.product_name}
                           className="w-16 h-16 object-cover rounded-md mx-auto"
                         />
