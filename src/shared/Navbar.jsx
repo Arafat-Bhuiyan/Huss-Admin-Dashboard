@@ -1,15 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 import profile from "../assets/images/profile.png";
-import logoutIcon from "../assets/images/logout.svg";
 import logo from "../assets/images/1ezybuy-logo.png";
 import { ChevronDown, LogOut } from "lucide-react";
-
+import { useGetProfileQuery } from "../Redux/api/authApi";
 
 export const Navbar = () => {
+  const { data: profileData } = useGetProfileQuery();
+  console.log(profileData);
   const navigate = useNavigate();
   const [isAdminRoleOpen, setIsAdminRoleOpen] = useState(false);
 
@@ -41,13 +40,19 @@ export const Navbar = () => {
           to={"/profile"}
           className="flex items-center gap-4 cursor-pointer"
         >
-          <img src={profile} alt="" />
+          <img
+            src={profileData?.picture || profile}
+            alt="profile"
+            className="w-10 h-10 rounded-full object-cover outline outline-2 outline-gray-50"
+          />
           <div className="flex flex-col justify-center">
             <h1 className="text-xl font-semibold text-[#363636]">
-              {user?.name || "User"}
+              {profileData?.first_name && profileData?.last_name
+                ? `${profileData.first_name} ${profileData.last_name}`
+                : "User"}
             </h1>
             <h3 className="text-base font-normal text-[#363636]">
-              {user?.role === "Super Admin" ? "Super Admin" : "Admin"}
+              {profileData?.role || "Admin"}
             </h3>
           </div>
         </Link>
