@@ -130,7 +130,7 @@ export const authApi = api.injectEndpoints({
     // === Dashboard Main Data ===
     getDashboardData: builder.query({
       query: () => ({
-        url: "/admin/dashboard/summary/",
+        url: "dashboard/summary/",
         method: "GET",
       }),
       providesTags: ["Dashboard"],
