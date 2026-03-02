@@ -29,14 +29,34 @@ export default function PromotionModal({ promotion, onSave, onClose }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "discount_amount" ? parseFloat(value) || "" : value,
-    }));
+
+    setFormData((prev) => {
+      const updatedData = {
+        ...prev,
+        [name]: name === "discount_amount" ? parseFloat(value) || "" : value,
+      };
+
+      // If start_date changes and is later than current end_date, clear end_date
+      if (name === "start_date" && prev.end_date && value > prev.end_date) {
+        updatedData.end_date = "";
+      }
+
+      return updatedData;
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (
+      formData.start_date &&
+      formData.end_date &&
+      formData.start_date > formData.end_date
+    ) {
+      alert("End date cannot be earlier than start date.");
+      return;
+    }
+
     onSave(formData);
   };
 
@@ -123,6 +143,7 @@ export default function PromotionModal({ promotion, onSave, onClose }) {
                 name="end_date"
                 value={formData.end_date}
                 onChange={handleChange}
+                min={formData.start_date}
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-amber-400"
                 required
               />
