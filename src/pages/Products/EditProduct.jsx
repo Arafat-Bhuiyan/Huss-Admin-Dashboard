@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft } from "lucide-react";
 import {
   useUpdateProductMutation,
@@ -22,6 +22,14 @@ const EditProductModal = ({ product, onClose, onSave }) => {
     product?.is_published || false,
   );
   const [image, setImage] = useState(null);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   // API mutation hook
   const [updateProduct, { isLoading }] = useUpdateProductMutation();
@@ -71,8 +79,8 @@ const EditProductModal = ({ product, onClose, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white w-[700px] rounded-xl p-6 relative">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">
+      <div className="bg-white w-full max-w-[700px] rounded-xl p-6 relative max-h-[90vh] overflow-y-auto">
         {/* Modal Header */}
         <div className="relative">
           <button

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useCreateCategoryMutation } from "../../Redux/api/authApi";
 
@@ -6,6 +6,14 @@ const AddCategoryModal = ({ onClose, onSave }) => {
   const [categoryName, setCategoryName] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   // API mutation hook
   const [createCategory, { isLoading }] = useCreateCategoryMutation();
@@ -46,7 +54,7 @@ const AddCategoryModal = ({ onClose, onSave }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white w-full max-w-[600px] rounded-xl p-6 relative shadow-2xl animate-in fade-in zoom-in duration-200">
+      <div className="bg-white w-full max-w-[600px] rounded-xl p-6 relative shadow-2xl animate-in fade-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
         {/* Modal Header */}
         <h2 className="text-xl font-bold text-gray-900 mb-1 text-center font-inter">
           Add New Category
