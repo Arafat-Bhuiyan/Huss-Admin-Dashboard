@@ -188,7 +188,7 @@ export const authApi = api.injectEndpoints({
     //  === Update User ===
     updateUser: builder.mutation({
       query: ({ id, data }) => ({
-        url: `/admin/users/${id}/status/`,
+        url: `/admin-v2/users/${id}/status/`,
         method: "PATCH",
         body: data,
       }),
