@@ -31,6 +31,8 @@ const router = createBrowserRouter([
           { path: "users", element: <Users /> },
           { path: "return-request", element: <ReturnRequest /> },
           { path: "orders", element: <OrdersPage /> },
+          { path: "category", element: <Category /> },
+          { path: "products", element: <Products /> },
           { path: "tracking", element: <Tracking /> },
           { path: "settings", element: <TermsAndPolicies /> },
           { path: "profile", element: <AdminProfileSettings /> },
@@ -41,8 +43,6 @@ const router = createBrowserRouter([
       {
         element: <RequireRole allowedRoles={["Super Admin"]} />,
         children: [
-          { path: "category", element: <Category /> },
-          { path: "products", element: <Products /> },
           { path: "wishlist", element: <Wishlist /> },
           {
             path: "wishlistUserListTable/:orderId",
