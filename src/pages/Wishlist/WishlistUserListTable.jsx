@@ -70,9 +70,9 @@ export default function WishlistUserListTable() {
           <h1 className="text-3xl font-semibold text-[#363636] mb-2">
             Dashboard
           </h1>
-          <p className="text-xl font-normal text-[#363636]">
+          {/* <p className="text-xl font-normal text-[#363636]">
             Welcome back, Alex! Here's what's happening with your store today.
-          </p>
+          </p> */}
         </div>
 
         {/* Table */}

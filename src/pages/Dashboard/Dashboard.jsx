@@ -113,9 +113,9 @@ export const Dashboard = () => {
           <div className="w-44 justify-start text-[#363636] text-3xl font-semibold font-inter mb-2">
             Dashboard
           </div>
-          <div className="w-[645px] justify-start text-[#363636] text-xl font-normal font-inter">
+          {/* <div className="w-[645px] justify-start text-[#363636] text-xl font-normal font-inter">
             Welcome back, Alex! Here's what's happening with your store today.
-          </div>
+          </div> */}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {dynamicStatsData.map((item, index) => (
