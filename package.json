@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "scp -r dist/* root@147.93.98.88:/app/1ezybuy/frontend-admin/"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.10.1",
