@@ -2,11 +2,15 @@ import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
 export default function RequireRole({ allowedRoles }) {
-  const { user } = useSelector((state) => state.auth);
+  const { user, access } = useSelector((state) => state.auth);
+  const token = access || localStorage.getItem("access");
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user || !token) {
+    return <Navigate to="/login" replace />;
+  }
 
-  if (!allowedRoles.includes(user.role)) {
+  const role = user?.role;
+  if (!role || !allowedRoles.includes(role)) {
     return <Navigate to="/login" replace />;
   }
 

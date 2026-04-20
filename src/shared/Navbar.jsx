@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import profile from "../assets/images/profile.png";
-import logo from "../assets/images/1ezybuy-logo.png";
+import accountIcon from "../assets/icons/accout.png";
+import logo from "../assets/images/1ezybuy-logo2.png";
 import { ChevronDown, LogOut } from "lucide-react";
 import { useGetProfileQuery } from "../Redux/api/authApi";
 
@@ -22,7 +22,10 @@ export const Navbar = () => {
   }, [user, dispatch]);
 
   const handleLogout = () => {
-    console.log("Logged out");
+    // Clear user data from Redux store
+    dispatch({ type: "auth/logout" });
+    // Redirect to login page
+   
     navigate("/login");
   };
   // ...existing code...
@@ -34,14 +37,14 @@ export const Navbar = () => {
     <div className="bg-white pt-10 pb-5 w-10/12 mx-auto flex flex-col gap-9">
       <div className="flex items-center justify-between">
         <Link to="/">
-          <img src={logo} alt="1ezybuy logo" className="h-9" />
+          <img src={logo} alt="1ezybuy logo" className="w-32" />
         </Link>
         <Link
           to={"/profile"}
           className="flex items-center gap-4 cursor-pointer"
         >
           <img
-            src={profileData?.picture || profile}
+            src={profileData?.picture || accountIcon}
             alt="profile"
             className="w-10 h-10 rounded-full object-cover outline outline-2 outline-gray-50"
           />

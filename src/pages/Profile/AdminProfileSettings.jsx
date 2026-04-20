@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
+import { api } from "../../Redux/api/api";
 import {
   useGetProfileQuery,
   useUpdateProfileMutation,
@@ -7,6 +9,7 @@ import {
 import { Loader2 } from "lucide-react";
 
 export default function AdminProfileSettings() {
+  const dispatch = useDispatch();
   const { data: profileData, isLoading: isProfileLoading } =
     useGetProfileQuery();
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
@@ -72,6 +75,7 @@ export default function AdminProfileSettings() {
       }
 
       await updateProfile(data).unwrap();
+      dispatch(api.util.invalidateTags(["Profile"]));
       toast.success("Profile updated successfully!");
     } catch (err) {
       console.error("Failed to update profile:", err);
