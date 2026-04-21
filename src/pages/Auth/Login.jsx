@@ -4,7 +4,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Redux/features/authSlice";
 import { useLoginMutation } from "../../Redux/api/authApi";
-import logo from "../../assets/images/1ezybuy-logo.png";
+import { Link } from "react-router-dom";
+import logo from "../../assets/images/1ezybuy-logo2.png";
 
 export const Login = () => {
   const dispatch = useDispatch();
@@ -43,9 +44,11 @@ export const Login = () => {
         onSubmit={handleSubmit}
         className="w-[656px] h-[692px] bg-white border border-[#C1C1C1] shadow-lg rounded-xl p-16  flex flex-col gap-6"
       >
-        <div className="flex justify-center mb-2">
-          <img src={logo} alt="1ezybuy logo" className="w-36 h-20" />
-        </div>
+       <div className="flex items-center justify-center">
+        <Link >
+          <img src={logo} alt="1ezybuy logo" className="w-40" />
+        </Link>
+       </div>
         <h2 className="text-center text-zinc-800 text-3xl font-normal font-roboto mb-4">
           Secure Dashboard Login
         </h2>
