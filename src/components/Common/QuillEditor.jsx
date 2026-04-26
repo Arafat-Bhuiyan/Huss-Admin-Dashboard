@@ -30,6 +30,8 @@ const QuillEditor = ({
     ],
   };
 
+  
+
   const formats = [
     "header",
     "size",
