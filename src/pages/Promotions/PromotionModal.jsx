@@ -190,7 +190,7 @@ export default function PromotionModal({ promotion, onSave, onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-[#FAF8F2] border text-gray-900 font-semibold rounded hover:bg-gray-100 transition-colors"
+              className="flex-1 px-4 py-2 border text-gray-900 font-semibold rounded hover:bg-gray-100 transition-colors"
             >
               Cancel
             </button>

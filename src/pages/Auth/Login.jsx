@@ -39,7 +39,7 @@ export const Login = () => {
   };
 
   return (
-    <div className=" bg-[#FAF8F2] w-full h-screen flex flex-col justify-center items-center">
+    <div className="w-full h-screen flex flex-col justify-center items-center">
       <form
         onSubmit={handleSubmit}
         className="w-[656px] h-[692px] bg-white border border-[#C1C1C1] shadow-lg rounded-xl p-16  flex flex-col gap-6"

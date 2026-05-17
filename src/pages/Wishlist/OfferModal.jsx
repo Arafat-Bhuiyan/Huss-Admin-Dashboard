@@ -115,7 +115,7 @@ export default function OfferModal({
           </button>
           <button
             onClick={onClose}
-            className="w-full bg-[#FAF8F2] text-[#363636] border border-[#C1C1C1] rounded-[8px] p-[10px] font-semibold"
+            className="w-full text-[#363636] border border-[#C1C1C1] rounded-[8px] p-[10px] font-semibold"
           >
             Cancel
           </button>

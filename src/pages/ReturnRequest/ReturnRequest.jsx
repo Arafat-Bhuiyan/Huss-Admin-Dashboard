@@ -112,7 +112,7 @@ export const ReturnRequest = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F2] py-8">
+    <div className="min-h-screen py-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-semibold text-[#363636] mb-2">

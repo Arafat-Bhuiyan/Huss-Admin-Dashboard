@@ -155,7 +155,7 @@ export function Promotions() {
           </h3>
 
           {/* Table */}
-          <div className="overflow-x-auto rounded bg-[#FAF8F2]">
+          <div className="overflow-x-auto rounded">
             <table className="w-full">
               <thead>
                 <tr className="">

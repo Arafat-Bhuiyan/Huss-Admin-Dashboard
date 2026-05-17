@@ -88,7 +88,7 @@ export const Dashboard = () => {
 
   if (currentLoading) {
     return (
-      <div className="min-h-screen bg-[#FAF8F2] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-2xl font-semibold text-gray-600 animate-pulse">
           Loading Dashboard...
         </div>
@@ -98,7 +98,7 @@ export const Dashboard = () => {
 
   if (currentError) {
     return (
-      <div className="min-h-screen bg-[#FAF8F2] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-2xl font-semibold text-red-600">
           Error loading dashboard data.
         </div>
@@ -107,7 +107,7 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F2]">
+    <div className="min-h-screen">
       <div className="py-8 flex flex-col gap-8">
         <div>
           <div className="w-44 justify-start text-[#363636] text-3xl font-semibold font-inter mb-2">

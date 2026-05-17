@@ -20,7 +20,7 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F2]">
+    <div className="min-h-screen">
       {/* Main Content */}
       <OrdersTable
         selectedStatus={selectedStatus}

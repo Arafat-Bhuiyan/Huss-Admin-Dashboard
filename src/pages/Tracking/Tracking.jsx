@@ -84,7 +84,7 @@ export const Tracking = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F2]">
+    <div className="min-h-screen">
       <div className="py-8">
         {/* Header */}
         <div className="mb-8 flex justify-between items-center">

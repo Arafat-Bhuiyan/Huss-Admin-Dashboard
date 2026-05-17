@@ -19,7 +19,7 @@ export const Users = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F2]">
+    <div className="min-h-screen">
       <UserTable onEdit={handleEdit} onDelete={handleDelete} />
       {/* Modal for editing user can be added here */}
     </div>
