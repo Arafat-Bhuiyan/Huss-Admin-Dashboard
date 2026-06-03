@@ -14,6 +14,13 @@ const FIXED_SPECIFICATION_KEYS = [
   "Warranty",
   "Country of Origin",
 ];
+const FIXED_EXAMPLE_KEYS = [
+  "Plastic",
+  "Blue",
+  "1 kg",
+  "1 year",
+  "Italy",
+];
 
 const getInitialSpecifications = (product) => {
   const defaultSpecifications = FIXED_SPECIFICATION_KEYS.map((key) => ({
@@ -46,6 +53,7 @@ const getInitialSpecifications = (product) => {
   });
 };
 
+
 const AddProductModal = ({ product, onClose, onSave }) => {
   const { data: categoryData } = useGetCategoryListQuery();
   const [productName, setProductName] = useState(product?.productName || "");
@@ -61,6 +69,7 @@ const AddProductModal = ({ product, onClose, onSave }) => {
   const [specifications, setSpecifications] = useState(() =>
     getInitialSpecifications(product),
   );
+
   const [images, setImages] = useState([]);
 
   // Lock body scroll when modal is open
@@ -153,9 +162,8 @@ const AddProductModal = ({ product, onClose, onSave }) => {
 
       // Append image files if selected
       if (images.length) {
-        formData.append("image", images[0]);
         images.forEach((selectedImage) => {
-          formData.append("images", selectedImage);
+          formData.append("uploaded_images", selectedImage);
         });
       }
 

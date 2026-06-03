@@ -45,14 +45,53 @@ const getInitialSpecifications = (product) => {
 const getProductImages = (product) => {
   const detailImages = Array.isArray(product?.images) ? product.images : [];
   const normalizedImages = detailImages
-    .map((image) => image?.image || image?.url || image)
+    .map((image, index) => {
+      if (typeof image === "string") {
+        return {
+          id: null,
+          url: image,
+          key: `image-${index}-${image}`,
+        };
+      }
+
+      const url = image?.image || image?.url;
+
+      if (!url) {
+        return null;
+      }
+
+      return {
+        id: image.id ?? null,
+        url,
+        key: image.id ? `image-${image.id}` : `image-${index}-${url}`,
+      };
+    })
     .filter(Boolean);
 
   if (product?.image) {
-    return [product.image, ...normalizedImages];
+    return [
+      {
+        id: product.image_id ?? null,
+        url: product.image,
+        key: product.image_id ? `image-${product.image_id}` : "primary-image",
+      },
+      ...normalizedImages,
+    ];
   }
 
   return normalizedImages;
+};
+
+const getImageUrl = (imageUrl) => {
+  if (!imageUrl) {
+    return "";
+  }
+
+  if (imageUrl.startsWith("http") || imageUrl.startsWith("blob:")) {
+    return imageUrl;
+  }
+
+  return `${import.meta.env.VITE_BASE_URL_MEDIA.split("/api/v1")[0]}${imageUrl}`;
 };
 
 const EditProductModal = ({ product, onClose, onSave }) => {
@@ -74,6 +113,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
   const [existingImages, setExistingImages] = useState(() =>
     getProductImages(product),
   );
+  const [deletedImageIds, setDeletedImageIds] = useState([]);
   const [images, setImages] = useState([]);
 
   // Lock body scroll when modal is open
@@ -111,6 +151,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
     setIsPublished(Boolean(currentProduct.is_published));
     setSpecifications(getInitialSpecifications(currentProduct));
     setExistingImages(getProductImages(currentProduct));
+    setDeletedImageIds([]);
   }, [product, productDetails]);
 
   const handleFileChange = (e) => {
@@ -142,6 +183,22 @@ const EditProductModal = ({ product, onClose, onSave }) => {
   const handleRemoveImage = (index) => {
     setImages((currentImages) =>
       currentImages.filter((_, imageIndex) => imageIndex !== index),
+    );
+  };
+
+  const handleDeleteExistingImage = (image) => {
+    if (!image.id) {
+      toast.error("This image cannot be deleted because it has no image ID.");
+      return;
+    }
+
+    setExistingImages((currentImages) =>
+      currentImages.filter((currentImage) => currentImage.key !== image.key),
+    );
+    setDeletedImageIds((currentImageIds) =>
+      currentImageIds.includes(image.id)
+        ? currentImageIds
+        : [...currentImageIds, image.id],
     );
   };
 
@@ -187,12 +244,14 @@ const EditProductModal = ({ product, onClose, onSave }) => {
         "specifications",
         JSON.stringify(formattedSpecifications),
       );
+      deletedImageIds.forEach((imageId) => {
+        formData.append("delete_image_ids", imageId);
+      });
 
       // Only append new image files if selected.
       if (images.length) {
-        formData.append("image", images[0]);
         images.forEach((selectedImage) => {
-          formData.append("images", selectedImage);
+          formData.append("uploaded_images", selectedImage);
         });
       }
 
@@ -398,12 +457,23 @@ const EditProductModal = ({ product, onClose, onSave }) => {
             {existingImages.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-2">
                 {existingImages.map((existingImage) => (
-                  <img
-                    key={existingImage}
-                    src={`${import.meta.env.VITE_BASE_URL_MEDIA.split("/api/v1")[0]}${existingImage}`}
-                    alt="Current product"
-                    className="w-16 h-16 object-cover rounded-md border border-gray-200"
-                  />
+                  <div key={existingImage.key} className="relative group">
+                    <img
+                      src={getImageUrl(existingImage.url)}
+                      alt="Current product"
+                      className="w-16 h-16 object-cover rounded-md border border-gray-200"
+                    />
+                    {existingImage.id && (
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteExistingImage(existingImage)}
+                        className="absolute -top-2 -right-2 h-6 w-6 inline-flex items-center justify-center rounded-full bg-red-600 text-white shadow hover:bg-red-700"
+                        aria-label="Delete existing image"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 ))}
               </div>
             )}

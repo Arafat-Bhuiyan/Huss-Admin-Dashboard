@@ -6,8 +6,6 @@ import logo from "../assets/images/1ezybuy-logo2.png";
 import { ChevronDown, LogOut } from "lucide-react";
 import { useGetProfileQuery } from "../Redux/api/authApi";
 
-
-
 export const Navbar = () => {
   const { data: profileData } = useGetProfileQuery();
   console.log(profileData);
