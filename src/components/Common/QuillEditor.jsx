@@ -26,7 +26,7 @@ const QuillEditor = ({
       [{ color: [] }, { background: [] }], // Color and background
       [{ list: "ordered" }, { list: "bullet" }],
       [{ align: [] }], // Text align
-      ["link", "clean"], // Removed images as requested
+      ["link"], // Removed images as requested
     ],
   };
 

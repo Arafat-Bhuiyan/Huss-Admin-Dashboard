@@ -1,27 +1,80 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Trash2 } from "lucide-react";
 import {
+  useGetProductDetailsQuery,
   useUpdateProductMutation,
   useGetCategoryListQuery,
 } from "../../Redux/api/authApi";
+import toast from "react-hot-toast";
+import QuillEditor from "../../components/Common/QuillEditor";
+
+const FIXED_SPECIFICATION_KEYS = [
+  "Material",
+  "Color",
+  "Weight",
+  "Warranty",
+  "Country of Origin",
+];
+
+const getInitialSpecifications = (product) => {
+  const defaultSpecifications = FIXED_SPECIFICATION_KEYS.map((key) => ({
+    key,
+    value: "",
+  }));
+
+  if (!product?.specifications) {
+    return defaultSpecifications;
+  }
+
+  const parsedSpecifications = Array.isArray(product.specifications)
+    ? product.specifications
+    : [];
+
+  return defaultSpecifications.map((defaultSpecification) => {
+    const existingSpecification = parsedSpecifications.find(
+      (specification) => specification.key === defaultSpecification.key,
+    );
+
+    return {
+      ...defaultSpecification,
+      value: existingSpecification?.value || "",
+    };
+  });
+};
+
+const getProductImages = (product) => {
+  const detailImages = Array.isArray(product?.images) ? product.images : [];
+  const normalizedImages = detailImages
+    .map((image) => image?.image || image?.url || image)
+    .filter(Boolean);
+
+  if (product?.image) {
+    return [product.image, ...normalizedImages];
+  }
+
+  return normalizedImages;
+};
 
 const EditProductModal = ({ product, onClose, onSave }) => {
   const { data: categoryData } = useGetCategoryListQuery();
-  const [productName, setProductName] = useState(product?.product_name || "");
-  const [category, setCategory] = useState(
-    product?.category?.id ? String(product.category.id) : "",
+  const { data: productDetails } = useGetProductDetailsQuery(product?.id, {
+    skip: !product?.id,
+  });
+  const [productName, setProductName] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [stockQty, setStockQty] = useState("");
+  const [stockStatus, setStockStatus] = useState("In Stock");
+  const [isPublished, setIsPublished] = useState(false);
+  const [specifications, setSpecifications] = useState(() =>
+    getInitialSpecifications(product),
   );
-  const [description, setDescription] = useState(product?.description || "");
-  const [price, setPrice] = useState(product?.price || "");
-  const [discount, setDiscount] = useState(product?.discount_percent || 0);
-  const [stockQty, setStockQty] = useState(product?.stock_quantity || "");
-  const [stockStatus, setStockStatus] = useState(
-    product?.stock_status === "in_stock" ? "In Stock" : "Out of Stock",
+  const [existingImages, setExistingImages] = useState(() =>
+    getProductImages(product),
   );
-  const [isPublished, setIsPublished] = useState(
-    product?.is_published || false,
-  );
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -35,23 +88,112 @@ const EditProductModal = ({ product, onClose, onSave }) => {
   const [updateProduct, { isLoading }] = useUpdateProductMutation();
   const stockStatuses = ["In Stock", "Out of Stock"];
 
+  useEffect(() => {
+    const currentProduct = productDetails || product;
+
+    if (!currentProduct) {
+      return;
+    }
+
+    setProductName(currentProduct.product_name || "");
+    setCategory(
+      currentProduct.category?.id ? String(currentProduct.category.id) : "",
+    );
+    setDescription(currentProduct.description || "");
+    setPrice(currentProduct.price || "");
+    setDiscount(currentProduct.discount_percent || 0);
+    setStockQty(currentProduct.stock_quantity || "");
+    setStockStatus(
+      currentProduct.stock_status === "out_of_stock"
+        ? "Out of Stock"
+        : "In Stock",
+    );
+    setIsPublished(Boolean(currentProduct.is_published));
+    setSpecifications(getInitialSpecifications(currentProduct));
+    setExistingImages(getProductImages(currentProduct));
+  }, [product, productDetails]);
+
   const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
+    const selectedImages = Array.from(e.target.files);
+
+    setImages((currentImages) => {
+      const newImages = selectedImages.filter(
+        (selectedImage) =>
+          !currentImages.some(
+            (currentImage) =>
+              currentImage.name === selectedImage.name &&
+              currentImage.size === selectedImage.size &&
+              currentImage.lastModified === selectedImage.lastModified,
+          ),
+      );
+      const nextImages = [...currentImages, ...newImages];
+
+      if (nextImages.length > 30) {
+        toast.error("You can select up to 30 images.");
+        return currentImages;
+      }
+
+      return nextImages;
+    });
+
+    e.target.value = "";
+  };
+
+  const handleRemoveImage = (index) => {
+    setImages((currentImages) =>
+      currentImages.filter((_, imageIndex) => imageIndex !== index),
+    );
+  };
+
+  const handleSpecificationChange = (index, value) => {
+    setSpecifications((currentSpecifications) =>
+      currentSpecifications.map((specification, specificationIndex) =>
+        specificationIndex === index
+          ? { ...specification, value }
+          : specification,
+      ),
+    );
   };
 
   const handleSave = async () => {
     try {
+      const formattedSpecifications = specifications.map((specification) => ({
+        key: specification.key,
+        value: specification.value.trim(),
+      }));
+
+      const hasEmptySpecification = formattedSpecifications.some(
+        (specification) => !specification.value,
+      );
+
+      if (hasEmptySpecification) {
+        toast.error("Please fill all specifications.");
+        return;
+      }
+
       const formData = new FormData();
       formData.append("product_name", productName);
       formData.append("description", description);
       formData.append("price", price);
+      formData.append("discount_percent", discount);
       formData.append("stock_quantity", stockQty);
+      formData.append(
+        "stock_status",
+        stockStatus === "In Stock" ? "in_stock" : "out_of_stock",
+      );
       formData.append("category", category);
       formData.append("is_published", isPublished);
+      formData.append(
+        "specifications",
+        JSON.stringify(formattedSpecifications),
+      );
 
-      // Only append image if a new one is selected
-      if (image) {
-        formData.append("image", image);
+      // Only append new image files if selected.
+      if (images.length) {
+        formData.append("image", images[0]);
+        images.forEach((selectedImage) => {
+          formData.append("images", selectedImage);
+        });
       }
 
       // Console log for debugging
@@ -74,7 +216,7 @@ const EditProductModal = ({ product, onClose, onSave }) => {
       onClose();
     } catch (err) {
       console.error("Failed to update product:", err);
-      alert("Failed to update product. Please try again.");
+      toast.error("Failed to update product. Please try again.");
     }
   };
 
@@ -139,12 +281,41 @@ const EditProductModal = ({ product, onClose, onSave }) => {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Description
             </label>
-            <textarea
+            <QuillEditor
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 min-h-[100px] resize-vertical"
+              onChange={setDescription}
               placeholder="Enter product description"
             />
+          </div>
+
+          {/* Specifications */}
+          <div className="col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Specifications
+            </label>
+
+            <div className="space-y-2">
+              {specifications.map((specification, index) => (
+                <div
+                  key={specification.key}
+                  className="grid grid-cols-[180px_1fr] gap-2 items-center"
+                >
+                  <div className="border border-gray-200 bg-gray-50 rounded-md px-3 py-2 text-sm font-medium text-gray-700">
+                    {specification.key}
+                  </div>
+                  <input
+                    type="text"
+                    value={specification.value}
+                    onChange={(e) =>
+                      handleSpecificationChange(index, e.target.value)
+                    }
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                    placeholder={`Enter ${specification.key}`}
+                    required
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Price */}
@@ -222,16 +393,56 @@ const EditProductModal = ({ product, onClose, onSave }) => {
           {/* Product Image */}
           <div className="col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Product Image
+              Product Images
             </label>
+            {existingImages.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {existingImages.map((existingImage) => (
+                  <img
+                    key={existingImage}
+                    src={`${import.meta.env.VITE_BASE_URL_MEDIA.split("/api/v1")[0]}${existingImage}`}
+                    alt="Current product"
+                    className="w-16 h-16 object-cover rounded-md border border-gray-200"
+                  />
+                ))}
+              </div>
+            )}
             <input
               type="file"
+              multiple
+              accept="image/*"
               onChange={handleFileChange}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             />
             <p className="text-xs text-gray-400 mt-1">
-              Upload a new image to replace the current one.
+              Upload up to 30 new images for the product.
             </p>
+            {images.length > 0 && (
+              <div className="mt-2 space-y-1">
+                <p className="text-xs text-gray-500">
+                  {images.length} new image{images.length > 1 ? "s" : ""}{" "}
+                  selected.
+                </p>
+                <div className="max-h-28 overflow-y-auto rounded-md border border-gray-200">
+                  {images.map((selectedImage, index) => (
+                    <div
+                      key={`${selectedImage.name}-${selectedImage.lastModified}`}
+                      className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-gray-600 border-b border-gray-100 last:border-b-0"
+                    >
+                      <span className="truncate">{selectedImage.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index)}
+                        className="shrink-0 text-gray-400 hover:text-red-500"
+                        aria-label="Remove selected image"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

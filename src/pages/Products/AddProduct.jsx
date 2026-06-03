@@ -1,10 +1,50 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Trash2 } from "lucide-react";
 import {
   useAddProductMutation,
   useGetCategoryListQuery,
 } from "../../Redux/api/authApi";
 import toast from "react-hot-toast";
+import QuillEditor from "../../components/Common/QuillEditor";
+
+const FIXED_SPECIFICATION_KEYS = [
+  "Material",
+  "Color",
+  "Weight",
+  "Warranty",
+  "Country of Origin",
+];
+
+const getInitialSpecifications = (product) => {
+  const defaultSpecifications = FIXED_SPECIFICATION_KEYS.map((key) => ({
+    key,
+    value: "",
+  }));
+
+  if (!product?.specifications) {
+    return defaultSpecifications;
+  }
+
+  let parsedSpecifications = [];
+  try {
+    parsedSpecifications = Array.isArray(product.specifications)
+      ? product.specifications
+      : JSON.parse(product.specifications);
+  } catch {
+    return defaultSpecifications;
+  }
+
+  return defaultSpecifications.map((defaultSpecification) => {
+    const existingSpecification = parsedSpecifications.find(
+      (specification) => specification.key === defaultSpecification.key,
+    );
+
+    return {
+      ...defaultSpecification,
+      value: existingSpecification?.value || "",
+    };
+  });
+};
 
 const AddProductModal = ({ product, onClose, onSave }) => {
   const { data: categoryData } = useGetCategoryListQuery();
@@ -17,7 +57,11 @@ const AddProductModal = ({ product, onClose, onSave }) => {
   const [stockStatus, setStockStatus] = useState(
     product?.stockStatus || "In Stock",
   );
-  const [image, setImage] = useState(null);
+
+  const [specifications, setSpecifications] = useState(() =>
+    getInitialSpecifications(product),
+  );
+  const [images, setImages] = useState([]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -31,15 +75,69 @@ const AddProductModal = ({ product, onClose, onSave }) => {
   const [addProduct, { isLoading }] = useAddProductMutation();
 
   // Categories were previously static, now using categoryData from API
-
   const stockStatuses = ["In Stock", "Out of Stock"];
 
   const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
+    const selectedImages = Array.from(e.target.files);
+    setImages((currentImages) => {
+      const newImages = selectedImages.filter(
+        (selectedImage) =>
+          !currentImages.some(
+            (currentImage) =>
+              currentImage.name === selectedImage.name &&
+              currentImage.size === selectedImage.size &&
+              currentImage.lastModified === selectedImage.lastModified,
+          ),
+      );
+      const nextImages = [...currentImages, ...newImages];
+
+      if (nextImages.length > 30) {
+        toast.error("You can select up to 30 images.");
+        return currentImages;
+      }
+
+      return nextImages;
+    });
+
+    e.target.value = "";
+  };
+
+  const handleRemoveImage = (index) => {
+    setImages((currentImages) =>
+      currentImages.filter((_, imageIndex) => imageIndex !== index),
+    );
+  };
+
+  const handleSpecificationChange = (index, value) => {
+    setSpecifications((currentSpecifications) =>
+      currentSpecifications.map((specification, specificationIndex) =>
+        specificationIndex === index
+          ? { ...specification, value }
+          : specification,
+      ),
+    );
   };
 
   const handleSave = async (isPublished = false) => {
     try {
+      if (images.length > 30) {
+        toast.error("You can select up to 30 images.");
+        return;
+      }
+      const formattedSpecifications = specifications.map((specification) => ({
+        key: specification.key,
+        value: specification.value.trim(),
+      }));
+
+      const hasEmptySpecification = formattedSpecifications.some(
+        (specification) => !specification.value,
+      );
+
+      if (hasEmptySpecification) {
+        toast.error("Please fill all specifications.");
+        return;
+      }
+
       // Create FormData object to send file and other data
       const formData = new FormData();
 
@@ -48,10 +146,17 @@ const AddProductModal = ({ product, onClose, onSave }) => {
       formData.append("price", price);
       formData.append("stock_quantity", stockQty);
       formData.append("is_published", isPublished);
+      formData.append(
+        "specifications",
+        JSON.stringify(formattedSpecifications),
+      );
 
-      // Append image file if selected
-      if (image) {
-        formData.append("image", image);
+      // Append image files if selected
+      if (images.length) {
+        formData.append("image", images[0]);
+        images.forEach((selectedImage) => {
+          formData.append("images", selectedImage);
+        });
       }
 
       // Append category (you may need to map category name to category ID)
@@ -151,12 +256,41 @@ const AddProductModal = ({ product, onClose, onSave }) => {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Description
             </label>
-            <textarea
+            <QuillEditor
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 min-h-[100px] resize-vertical"
+              onChange={setDescription}
               placeholder="Enter product description"
             />
+          </div>
+
+          {/* Specifications */}
+          <div className="col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Specifications
+            </label>
+
+            <div className="space-y-2">
+              {specifications.map((specification, index) => (
+                <div
+                  key={specification.key}
+                  className="grid grid-cols-[180px_1fr] gap-2 items-center"
+                >
+                  <div className="border border-gray-200 bg-gray-50 rounded-md px-3 py-2 text-sm font-medium text-gray-700">
+                    {specification.key}
+                  </div>
+                  <input
+                    type="text"
+                    value={specification.value}
+                    onChange={(e) =>
+                      handleSpecificationChange(index, e.target.value)
+                    }
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                    placeholder={`e.g., ${specification.key}`}
+                    required
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Price */}
@@ -219,16 +353,44 @@ const AddProductModal = ({ product, onClose, onSave }) => {
           {/* Product Image */}
           <div className="col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Product Image
+              Product Images
             </label>
             <input
               type="file"
+              multiple
+              accept="image/*"
               onChange={handleFileChange}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             />
             <p className="text-xs text-gray-400 mt-1">
-              Upload a high-quality image for the product.
+              Upload up to 30 high-quality images for the product.
             </p>
+            {images.length > 0 && (
+              <div className="mt-2 space-y-1">
+                <p className="text-xs text-gray-500">
+                  {images.length} image{images.length > 1 ? "s" : ""}{" "}
+                  selected.
+                </p>
+                <div className="max-h-28 overflow-y-auto rounded-md border border-gray-200">
+                  {images.map((selectedImage, index) => (
+                    <div
+                      key={`${selectedImage.name}-${selectedImage.lastModified}`}
+                      className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-gray-600 border-b border-gray-100 last:border-b-0"
+                    >
+                      <span className="truncate">{selectedImage.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index)}
+                        className="shrink-0 text-gray-400 hover:text-red-500"
+                        aria-label="Remove selected image"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
